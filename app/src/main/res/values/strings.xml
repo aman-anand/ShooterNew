@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">ShooterNew</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
+    <string name="start_level">Level 1</string>
+    <string name="next_level">Next Level</string>
+
+    <!-- Play page -->
+    <string name="Level">Level</string>
+    <string name="LevelComplted"> Congratulation !</string>
+    <string name="LevelFailed"> Level Failed</string>
+    <string name="life">Life</string>
+    <string name="pause">Pause</string>
+    <string name="score">Score</string>
+    <string name="time">Time</string>
+
+
+
+    <!-- Back button press -->
+
+    <string name="contInue">Continue</string>
+    <string name="home">Home</string>
+    <string name="restart">Restart</string>
+
+    <!-- Home page exit dialog -->
+
+    <string name="next">Next</string>
+    <string name="moves">Moves </string>
+
+
+    <string name="ok">OK</string>
+    <string name="cancle">Cancel</string>
+    <string name="RateIt">Rate it</string>
+    <string name="wanttoquite">Sure To Quit?</string>
+
+    <!-- Home page -->
+
+    <string name="play">Play</string>
+    <string name="moreapps">More Games</string>
+    <string name="option">Options</string>
+    <string name="about">About</string>
+    <string name="Help">How To Play</string>
+    <string name="setting">Setting</string>
+
+    <!-- Help page -->
+    <string name="helptext">Touch the 99 red color bubble. It99 will blast and hit to other99 bubble to make a series of99 blast. Every bubble must99 have to red in color 99for blast.</string>
+
+    <!-- About  -->
+
+    <string name="abouttext">Bubble Touch Crush 99 Licence Version 1.0.0 99 Powered by Kiss 4 Games99 Email: kiss4games@gmail.com 99 All Rights Reserved </string>
+
+
+
+    <color name="strokeColor">#000000</color>
+    <color name="exitpagecolor">#8ED6EA</color>
+    <color name="pausecol">#cc6c18</color>
+    <color name="paincolor">#9ab818</color>
+    <color name="FillColor">#f6ff00</color>
+    <color name="FillColor1">#ff6600</color>
+    <color name="white">#ffffff</color>
+    <color name="green">#66CD00</color>
+    <color name="black">#000000</color>
+    <color name="levelextcolor">#FF8000</color>
+    <!-- -
+        This is an ad unit ID for an interstitial test ad. Replace with your own interstitial ad unit id.
+        For more information, see https://support.google.com/admob/answer/3052638
+    <!- -->
+    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
+</resources>
