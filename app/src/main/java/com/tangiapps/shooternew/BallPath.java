@@ -27,8 +27,8 @@ public class BallPath {
 
     boolean flag;
     double slope1;
-    int y,x=cX;
-    int xb=cX,yb=cY;
+    float y,x=cX;
+float xb=cX,yb=cY;
     ArrayList<Point> amama=new ArrayList<Point>();
 
 
@@ -60,15 +60,15 @@ public class BallPath {
     }
 
 //x1- cord of x at which y is to be found
-    private int pointL(int x1,int xStsart, int yStart, double slope){
+    private float pointL(float x1,float xStsart, float yStart, double slope){
         // flag=false;
-        int y11= (int) ((slope*(x1-xStsart))+yStart);
+        float y11= (float) ((slope*(x1-xStsart))+yStart);
         return y11;
     }
     @Contract(pure = true)
-    private int pointR(int x1,int xStsart, int yStart, double slope){
+    private float pointR(float x1,float xStsart, float yStart, double slope){
         // flag=true;
-        int y11= (int) ((slope*(x1 - xStsart))+yStart);
+        float y11= (float) ((slope*(x1 - xStsart))+yStart);
         return y11;
     }
 

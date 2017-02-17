@@ -21,7 +21,7 @@ public class LevelFailed {
 	Paint ppaint = new Paint();
 	Paint stpaint = new Paint();
 	
-Rect home,retry;
+RectF home,retry;
 Activity activityRef;
 public LevelFailed(Activity activityRef){
 	this.activityRef=activityRef;
@@ -84,7 +84,7 @@ public LevelFailed(){
 		
 		paint.setColor(Color.BLACK);
 		paint.setAlpha(150);
-		c.drawRect(new Rect(0,0,(int)(ApplicationView.displayW),(int)(ApplicationView.displayH)), paint);
+		c.drawRect (new RectF (0,0,(int)(ApplicationView.displayW),(int)(ApplicationView.displayH)), paint);
 		paint.setColor(Color.BLACK);
 		paint.setAlpha(225);
 
@@ -93,10 +93,10 @@ public LevelFailed(){
 		stpaint.setColor(Color.BLUE);
 
 		
-		Rect rect=new Rect((int)(0),(int)(0),(int)(ApplicationView.displayW),(int)(ApplicationView.displayH));
+		RectF rect=new RectF ((int)(0),(int)(0),(int)(ApplicationView.displayW),(int)(ApplicationView.displayH));
 		
 
-		c.drawRect(rect, paint);
+		c.drawRect(rect , paint);
 		
 		
 		pp.setAntiAlias(true);
@@ -178,14 +178,14 @@ public LevelFailed(){
 	}
 	
 	
-	public void onTouchDown(int x_dn, int y_dn) {
+	public void onTouchDown(float x_dn, float y_dn) {
 
 		blockW = ApplicationView.blockW;
 		blockH = ApplicationView.blockH;
 
 	
-	home=new Rect((int)(ApplicationView.displayW*.15f),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
-	retry=new Rect((int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+	home=new RectF ((float)(ApplicationView.displayW*.15f),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+	retry=new RectF ((float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
 	
 
 	if(home.contains(x_dn, y_dn)){
@@ -197,11 +197,11 @@ public LevelFailed(){
 
 	}// end of touch down
 
-	public void onTouchUp(int x_dn, int y_dn) {
+	public void onTouchUp(float x_dn, float y_dn) {
 
 		
-		home=new Rect((int)(ApplicationView.displayW*.15f),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
-		retry=new Rect((int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+		home=new RectF ((float)(ApplicationView.displayW*.15f),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+		retry=new RectF ((float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
 		
 
 		

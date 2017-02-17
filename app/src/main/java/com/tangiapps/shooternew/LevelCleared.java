@@ -16,7 +16,7 @@ public class LevelCleared {
 	RectF rectBack = new RectF();
 	Paint ppaint = new Paint();
 	Paint stpaint = new Paint();
-	Rect next,home;
+	RectF next,home;
 	
 
 	Activity activityRef;
@@ -85,7 +85,7 @@ public class LevelCleared {
 		stpaint.setColor(Color.BLUE);
 
 		
-		Rect rect=new Rect((int)(0),(int)(0),(int)(ApplicationView.displayW),(int)(ApplicationView.displayH));
+		RectF rect=new RectF((float)(0),(float)(0),(float)(ApplicationView.displayW),(float)(ApplicationView.displayH));
 		
 
 		c.drawRect(rect, paint);
@@ -188,10 +188,10 @@ public class LevelCleared {
 	}
 	
 	
-	public void onTouchDown(int x_dn, int y_dn) {
+	public void onTouchDown(float x_dn, float y_dn) {
 
-		home=new Rect((int)(ApplicationView.displayW*.15f),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
-		next=new Rect((int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+		home=new RectF((ApplicationView.displayW*.15f),(float)(ApplicationView.displayH*.7+xoffset),(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+		next=new RectF((float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
 		
 	
 		if(home.contains(x_dn, y_dn)){
@@ -204,9 +204,9 @@ public class LevelCleared {
 	}
 
 
-	public void onTouchUp(int x_up, int y_up) {
-		home=new Rect((int)(ApplicationView.displayW*.15f),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
-		next=new Rect((int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(int)(ApplicationView.displayH*.7+xoffset),(int)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(int)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+	public void onTouchUp(float x_up, float y_up) {
+		home=new RectF((float)(ApplicationView.displayW*.15f),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.15f+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
+		next=new RectF((float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()),(float)(ApplicationView.displayH*.7+xoffset),(float)(ApplicationView.displayW*.85f-LoadImage.next.getWidth()+LoadImage.home.getWidth()),(float)(ApplicationView.displayH*.7+LoadImage.home.getHeight()+xoffset));
 	
 		ApplicationView.isBackgroundTouch=true;
 		AppActivity main=(AppActivity)ApplicationView.contxt;

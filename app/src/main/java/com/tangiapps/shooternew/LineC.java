@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 import org.jetbrains.annotations.Contract;
@@ -30,28 +31,28 @@ import static com.tangiapps.shooternew.ApplicationView.ybuffer;
 public class LineC {
 
     //______________________________Variables________________________________________________________
-    int dx,dy,x,y;
+    float dx,dy,x,y;
     static double angle,slope;
     boolean flag;
     Point p[] =new Point[2];
     Path path=new Path();
-    int x22,y22;
+    float x22,y22;
     double slope1;
     static double slope2,dist;
     static boolean ballflag;
-    private int lx,ly;
+    private float lx,ly;
     private BallPath ballPath;
     private boolean nnnnnnnnnn;
     Bitmap ball=LoadImage.ballImg[5];
     ArrayList<Point> ballCord=new ArrayList<Point>();
-    static int xb=cX,yb=cY;
-    Rect shotBall;
+    static float xb=cX,yb=cY;
+    RectF shotBall;
 
     LineC(){
 
     }
     //__________________________________Methods_______________________________________________________
-    void angleC(int dwnX, int dwnY){
+    void angleC(float dwnX, float dwnY){
         ball=LoadImage.ballImg[5];
         dx=cX;
         x22=cX;
@@ -62,8 +63,8 @@ public class LineC {
         double yDiff = cY-dwnY;
         angle= Math.toDegrees(Math.atan2(yDiff, xDiff));
 //        System.out.println("angle = " + angle);
-        int xEnd = (int) (cX - (Math.cos(Math.toRadians(angle)) * 1500));
-        int yEnd = (int) (cY - (Math.sin(Math.toRadians(angle)) * 1500));
+        float xEnd = (int) (cX - (Math.cos(Math.toRadians(angle)) * 1500));
+        float yEnd = (int) (cY - (Math.sin(Math.toRadians(angle)) * 1500));
 //        System.out.println("xEnd = " + xEnd);
 //        System.out.println("yEnd = " + yEnd);
         if (xEnd< displayW/2){
@@ -84,15 +85,15 @@ public class LineC {
 
     }
    //__________________________________________________________________________________
-    private int formLineL(int xStsart, int yStart, double slope){
+    private float formLineL(float xStsart, float yStart, double slope){
        // flag=false;
-        int y11= (int) ((slope*(30-xStsart))+yStart);
+        float y11= (int) ((slope*(30-xStsart))+yStart);
        return y11;
     }
 
-    private int formLineR(int xStsart, int yStart, double slope){
+    private float formLineR(float xStsart, float yStart, double slope){
        // flag=true;
-        int y11= (int) ((slope*((displayW-30) - xStsart))+yStart);
+        float y11= (int) ((slope*((displayW-30) - xStsart))+yStart);
        return y11;
     }
 
@@ -136,7 +137,7 @@ public class LineC {
 
 
    public void ballPts(Canvas c){
-       int recCenter;
+       float recCenter;
         c.drawPath(path,pp);
 
         xb=xbuffer;
@@ -148,7 +149,7 @@ public class LineC {
                 lx=dx-ball.getWidth()/2;
                 ly=y-ball.getHeight()/2;
                 c.drawBitmap(ball,lx,ly,null);
-                shotBall=new Rect(lx,ly,lx+ball.getWidth(),ly+ball.getHeight());
+                shotBall=new RectF(lx,ly,lx+ball.getWidth(),ly+ball.getHeight());
                 c.drawRect(shotBall,pp);
 //                c.drawBitmap(ball,dx+ball.getWidth()/2,y+ball.getHeight()/2,null);
 
@@ -171,7 +172,7 @@ public class LineC {
                 lx=dx-ball.getWidth()/2;
                 ly=y-ball.getHeight()/2;
                 c.drawBitmap(ball,lx,ly,null);
-                shotBall=new Rect(lx,ly,lx+ball.getWidth(),ly+ball.getHeight());
+                shotBall=new RectF(lx,ly,lx+ball.getWidth(),ly+ball.getHeight());
                 c.drawRect(shotBall,pp);
 
                 if ((dx+ball.getWidth()/2)>=displayW){
@@ -189,9 +190,9 @@ public class LineC {
    }
 
     //x1- cord of x at which y is to be found
-    private int point(int x1,int xStsart, int yStart, double slope){
+    private float point(float x1,float xStsart, float yStart, double slope){
         // flag=false;
-        int y11= (int) ((slope*(x1-xStsart))+yStart);
+        float y11= (int) ((slope*(x1-xStsart))+yStart);
         return y11;
     }
 

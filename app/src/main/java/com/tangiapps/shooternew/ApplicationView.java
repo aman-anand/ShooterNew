@@ -6,7 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -28,9 +29,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             x_cor = 0, y_cor = 0;
     public static boolean isTouchEnable = true;
     static Context contxt;
-    static int levelno = 1, row_count = 11, col_count = 10, downX = 0, downY = 0,
-            upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
-            dY = 0;
+    static int levelno = 1, row_count = 11, col_count = 10;
+    float  downX = 0, downY = 0,
+    upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
+    dY = 0;
     static boolean isBackgroundTouch = false, isResetButton = false, isGoToNextLevel = false, isQuitPage = false, isSettingPage = false,
             isBackButtonPress = false, isMianPage = false, isResetAppLevel = false, isPlayingMode = false, isLevelPage = false,
             islevelCleared = false, isLevelFailed = false, isNextBtnPressed = false, isSoundOn = true,
@@ -45,10 +47,11 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     QuitePage quitPage = new QuitePage();
     SettingPage settingPage = new SettingPage();
     Options op = new Options();
-    Rect boardRect;
+    RectF boardRect;
+
     BackButtonPress backButtonPress = new BackButtonPress();
     DrawString drawString = new DrawString();
-    Rect reset, pause;
+    RectF reset, pause;
     ;
     int row = -1, col = -1, delay1 = 0, a = 20;
     int delayCounter = 0, framecount = 0, framecount1 = 0, framecount2 = 0, birdIndex = 0, totalframe = 6;
@@ -62,13 +65,13 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     ArrayList<Ball> bubble=new ArrayList<>();
     Rotate rotate=new Rotate();
     Bitmap bitmap;
-    Rect rec_shooter;
-    static int cX=0,x,y;
-    static int cY=0,xbuffer,ybuffer;
+    RectF rec_shooter;
+    static float cX=0,x,y;
+    static float cY=0,xbuffer,ybuffer;
     double slope;
     Point p1;
     Point p2;
-    int xEnd,yEnd,xe1,ye1;
+    float xEnd,yEnd,xe1,ye1;
     double angle,y22;
     static Paint pp=new Paint();
     float intercept;
@@ -77,7 +80,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     static ArrayList<Ball> balls=new ArrayList<>();
     ArrayList<Ball> bubbles=new ArrayList<>();
     int[][] gameMatrix=new int[11][10];
-    private int xl,yl;
+    private float xl,yl;
     BallPath ballPath=new BallPath();
 
 
@@ -296,7 +299,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        pause = new Rect((int) (ApplicationView.displayW * .97f - LoadImage.pause.getWidth()), (int) (ApplicationView.displayH * .1f), (int) (ApplicationView.displayW * .97f), (int) (ApplicationView.displayH * .1f + LoadImage.pause.getHeight()));
+        pause = new RectF((float) (ApplicationView.displayW * .97f - LoadImage.pause.getWidth()), (float) (ApplicationView.displayH * .1f), (float) (ApplicationView.displayW * .97f), (float) (ApplicationView.displayH * .1f + LoadImage.pause.getHeight()));
 
 
         if (isQuitPage) {
@@ -332,10 +335,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
                 case MotionEvent.ACTION_DOWN:
 
-                    downX = (int) event.getX();
-                    downY = (int) event.getY();
-                    dX = (int) event.getX();
-                    dY = (int) event.getY();
+                    downX = (float) event.getX();
+                    downY = (float) event.getY();
+                    dX = (float) event.getX();
+                    dY = (float) event.getY();
                     if (isPlayingMode){
                         aBoolean=true;
                         lp2.angleC(downX,downY);
@@ -380,10 +383,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
                     break;
                 case MotionEvent.ACTION_UP:
-                    upX = (int) event.getX();
-                    uX = (int) event.getX();
-                    upY = (int) event.getY();
-                    uY = (int) event.getY();
+                    upX = (float) event.getX();
+                    uX = (float) event.getX();
+                    upY = (float) event.getY();
+                    uY = (float) event.getY();
                     aBoolean=false;
                     if (isPlayingMode&&!aBoolean){
                        // ballPath.setBall(LoadImage.ballImg[3]);
@@ -418,10 +421,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    downX = (int) event.getX();
-                    downY = (int) event.getY();
-                    dX = (int) event.getX();
-                    dY = (int) event.getY();
+                    downX = (float) event.getX();
+                    downY = (float) event.getY();
+                    dX = (float) event.getX();
+                    dY = (float) event.getY();
                     lp2.path.reset();
 
                     if (isPlayingMode){
@@ -531,10 +534,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     }
     //__________________________________________________________________My methods_________________________________________________
 void initshooter(){
-    int x = (int) (ApplicationView.displayW*.5f-LoadImage.shooter.getWidth());
-    int y = (int) (ApplicationView.displayH*.8f);
+    float x = (float) (ApplicationView.displayW*.5f-LoadImage.shooter.getWidth());
+    float y = (float) (ApplicationView.displayH*.8f);
     //System.out.println(x+"  "+y);
-    rec_shooter=new Rect(x,y, x+ LoadImage.shooter.getWidth(),y+ LoadImage.shooter.getHeight());
+    rec_shooter=new RectF(x,y, x+ LoadImage.shooter.getWidth(),y+ LoadImage.shooter.getHeight());
 
     cX= x+ LoadImage.shooter.getWidth();
     cX-=36;
@@ -572,8 +575,8 @@ void initshooter(){
 //        if (isUpdate || islevelCleared) {
 //           balls.clear();
 //        }
-        x = (int) (displayW - (col_count * ballImg[0].getWidth())) / 3;
-        y = (int) (displayH - (row_count * ballImg[0].getHeight())) / 3;
+        x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 3;
+        y = (float) (displayH - (row_count * ballImg[0].getHeight())) / 3;
         xl = ballImg[0].getWidth();
         yl = ballImg[0].getHeight();
         for (int i = 0; i < row_count; i++) {
@@ -581,12 +584,12 @@ void initshooter(){
 
                 balls.add( new Ball(x, y, gameMatrix[i][j], true));
 
-                x = (int) (x + xl);
+                x = (float) (x + xl);
 
             }
-            x = (int) (displayW - (col_count * ballImg[0].getWidth())) / 2;
+            x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 2;
 
-            y = (int) (y + yl);
+            y = (float) (y + yl);
 
         }
         System.out.println("balls.size  " +balls.size());

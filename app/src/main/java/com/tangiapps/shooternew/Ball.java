@@ -2,6 +2,7 @@ package com.tangiapps.shooternew;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 import static com.tangiapps.shooternew.LoadImage.ballImg;
 import static com.tangiapps.shooternew.LoadImage.bubble;
@@ -10,31 +11,32 @@ import static com.tangiapps.shooternew.LoadImage.bubble;
 
 
 public class Ball {
-    int x,y,index,x1,y1;
+    float x,y,x1,y1;
+    int index;
     boolean isVisible,isBurst;
     boolean isLeaf;
     boolean isClick;
-    Rect rec=new Rect();
-    int disH= (int) ApplicationView.displayH;
-    int disW= (int) ApplicationView.displayW;
+    RectF rec=new RectF();
+    float disH= (float) ApplicationView.displayH;
+    float disW= (float) ApplicationView.displayW;
 
-    Ball(int x1, int y1, int index1, boolean a){
+    Ball(float x1, float y1, int index1, boolean a){
         x=x1;
         y=y1;
         index=index1;
         isVisible=a;
         isLeaf=false;
         //For rectangle
-        rec=new Rect(x,y, x+ ballImg[index].getWidth(),y+ ballImg[index].getHeight());
+        rec=new RectF(x,y, x+ ballImg[index].getWidth(),y+ ballImg[index].getHeight());
 
     }
-    Ball(int x1,int y1, boolean a){
+    Ball(float x1,float y1, boolean a){
         x=x1;
         y=y1;
         isVisible=a;
         isBurst=false;
 
-        rec=new Rect(x,y, x+ bubble.getWidth(),y+ bubble.getHeight());
+        rec=new RectF(x,y, x+ bubble.getWidth(),y+ bubble.getHeight());
 
     }
     void ballanim(Canvas c ){
