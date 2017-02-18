@@ -75,7 +75,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     double angle,y22;
     static Paint pp=new Paint();
     float intercept;
-   LineC lp2=new LineC();
+   LineC lp2;
     Point [] points=new Point[2];
     static ArrayList<Ball> balls=new ArrayList<>();
     ArrayList<Ball> bubbles=new ArrayList<>();
@@ -93,7 +93,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         DisplayMetrics = context.getResources().getDisplayMetrics();
         displayW = DisplayMetrics.widthPixels;
         displayH = DisplayMetrics.heightPixels;
-
+        lp2=new LineC();
         isMianPage = true;
 
         blockW = displayW / col_count;//*0.13541666666666666666666666666667f;
