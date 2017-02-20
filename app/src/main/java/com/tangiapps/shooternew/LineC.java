@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Contract;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import static android.graphics.RectF.intersects;
 import static com.tangiapps.shooternew.ApplicationView.cX;
 import static com.tangiapps.shooternew.ApplicationView.cY;
 import static com.tangiapps.shooternew.ApplicationView.col_count;
@@ -29,10 +30,13 @@ import static com.tangiapps.shooternew.ApplicationView.ybuffer;
  * Created by PC-T3 on 2/11/2017.
  */
 
+
+
 public class LineC {
 
     //______________________________Variables________________________________________________________
-    float dx, dy, x, y;
+    Circle circle=new Circle();
+   static float dx1, dy1, x, y;
     static double angle, slope;
     boolean flag;
     Point p[] = new Point[2];
@@ -43,17 +47,19 @@ public class LineC {
     static boolean ballflag;
     private float lx, ly;
     private BallPath ballPath;
-    private boolean nnnnnnnnnn;
-    float totaldist = 0;
-    Bitmap ball = LoadImage.ballImg[5];
-    ArrayList<Float> ballspeed = new ArrayList<>();
+    Ball ball;
+    Bitmap ball1 = LoadImage.ballImg[5];
+    ArrayList<Double> dire= new ArrayList<>();
+    ArrayList<Double> direction= new ArrayList<>();
     static float xb, yb;
     RectF shotBall;
-    float speed = 0;
+    boolean burst;
+    double speed = 8;
     float xE = (float) (displayW * 0.0375);
+    int i=0;
 
     LineC() {
-        speed = 0;
+        speed = displayH*0.009677;
         xb = cX;
         xE = (float) (displayW * 0.04166);
         yb = cY;
@@ -61,16 +67,18 @@ public class LineC {
 
     //__________________________________Methods_______________________________________________________
     void angleC(float dwnX, float dwnY) {
-        ball = LoadImage.ballImg[5];
-
-
-        dx = cX;
+        ball = new Ball( 0,  0, 3,true,0 );
+        burst=false;
+        dire.clear();
+        dx1 = cX;
         x22 = cX;
         y22 = cY;
+        i=0;
         xbuffer = cX;
         ybuffer = cY;
         double xDiff = cX - dwnX;
         double yDiff = cY - dwnY;
+
         angle = Math.toDegrees(Math.atan2(yDiff, xDiff));
 //        System.out.println("angle = " + angle);
         float xEnd = (int) (cX - (Math.cos(Math.toRadians(angle)) * 1500));
@@ -98,12 +106,14 @@ public class LineC {
     private float formLineL(float xStsart, float yStart, double slope) {
         // flag=false;
         float y11 = (int) ((slope * (xE - xStsart)) + yStart);
+        dire.add(Math.atan2((y11-yStart),(xE-xStsart)));
         return y11;
     }
 
     private float formLineR(float xStsart, float yStart, double slope) {
         // flag=true;
         float y11 = (int) ((slope * ((displayW - xE) - xStsart)) + yStart);
+        dire.add(Math.atan2((y11-yStart),((displayW - xE)-xStsart)));
         return y11;
     }
 
@@ -134,7 +144,7 @@ public class LineC {
         }
         c.drawPath(path, pp);
 
-        c.drawBitmap(ball, cX, cY, null);
+        //c.drawBitmap(ball, cX, cY, null);
 
 
     }
@@ -143,66 +153,68 @@ public class LineC {
 //___________________________________________________________________ball path
 
 
-    public void ballPts(Canvas c) {
-        float recCenter;
-        speed = (float) (dist / 60);
-        c.drawPath(path, pp);
-
-        xb = xbuffer;
-        yb = ybuffer;
-        //c.drawBitmap(ball,cX-ball.getWidth()/2,cY-ball.getHeight()/2,null);
-
-        if (ballflag) {
-            y = point(dx, xb, yb, slope2);
-            lx = dx - ball.getWidth() / 2;
-            ly = y - ball.getHeight() / 2;
-            c.drawBitmap(ball, lx, ly, null);
-            shotBall = new RectF(lx, ly, lx + ball.getWidth(), ly + ball.getHeight());
-            c.drawRect(shotBall, pp);
-//                c.drawBitmap(ball,dx+ball.getWidth()/2,y+ball.getHeight()/2,null);
-
-            dx -= 15;
-
-            if ((dx - ball.getWidth() / 2) <= 0) {
-                ballflag = false;
-                slope2 *= -1;
-
-                yb = y;
-                xb = dx;
-                //System.out.println("slope2 = " + slope2);
-
-            }
-        } else {
-            dx += 15;
-            y = point(dx, xb, yb, slope2);
-            // c.drawBitmap(ball,dx-ball.getWidth()/2,y-ball.getHeight()/2,null);
-            lx = dx - ball.getWidth() / 2;
-            ly = y - ball.getHeight() / 2;
-            c.drawBitmap(ball, lx, ly, null);
-            shotBall = new RectF(lx, ly, lx + ball.getWidth(), ly + ball.getHeight());
-            c.drawRect(shotBall, pp);
-
-            if ((dx + ball.getWidth() / 2) >= displayW) {
-                ballflag = true;
-                slope2 *= -1;
-                yb = y;
-                xb = dx;
-//                    System.out.println("ball.getWidth()/2 = " + ball.getWidth()/2);
-//                    System.out.println("slope2 = " + slope2);
-
-            }
-        }
-        if (y > -1 && y <= displayH) {
-            ApplicationView.shoot = false;
-        }
-    }
-
-    //x1- cord of x at which y is to be found
-    private float point(float x1, float xStsart, float yStart, double slope) {
-        // flag=false;
-        float y11 = (int) ((slope * (x1 - xStsart)) + yStart);
-        return y11;
-    }
+//    public void ballPts(Canvas c) {
+//        float recCenter;
+//        speed = (float) (dist / 60);
+//        c.drawPath(path, pp);
+//
+//        xb = xbuffer;
+//        yb = ybuffer;
+//        //c.drawBitmap(ball,cX-ball.getWidth()/2,cY-ball.getHeight()/2,null);
+//
+//        if (ballflag) {
+//            y = point(dx1, xb, yb, slope2);
+//            lx = dx1 - ball.getWidth() / 2;
+//            ly = y - ball.getHeight() / 2;
+//            c.drawBitmap(ball, lx, ly, null);
+//            shotBall = new RectF(lx, ly, lx + ball.getWidth(), ly + ball.getHeight());
+//            c.drawRect(shotBall, pp);
+////                c.drawBitmap(ball,dx1+ball.getWidth()/2,y+ball.getHeight()/2,null);
+//
+//            dx1 -= 15;
+//
+//            if ((dx1 - ball.getWidth() / 2) <= 0) {
+//                ballflag = false;
+//                slope2 *= -1;
+//
+//                yb = y;
+//                xb = dx1;
+//                //System.out.println("slope2 = " + slope2);
+//
+//            }
+//        } else {
+//            dx1 += 15;
+//            y = point(dx1, xb, yb, slope2);
+//            // c.drawBitmap(ball,dx1-ball.getWidth()/2,y-ball.getHeight()/2,null);
+//            lx = dx1 - ball.getWidth() / 2;
+//            ly = y - ball.getHeight() / 2;
+//            c.drawBitmap(ball, lx, ly, null);
+//            shotBall = new RectF(lx, ly, lx + ball.getWidth(), ly + ball.getHeight());
+//            c.drawRect(shotBall, pp);
+//
+//            if ((dx1 + ball.getWidth() / 2) >= displayW) {
+//                ballflag = true;
+//                slope2 *= -1;
+//                yb = y;
+//                xb = dx1;
+////                    System.out.println("ball.getWidth()/2 = " + ball.getWidth()/2);
+////                    System.out.println("slope2 = " + slope2);
+//
+//            }
+//        }
+//        if (y > -1 && y <= displayH) {
+//            ApplicationView.shoot = false;
+//        }
+//    }
+//
+//    //x1- cord of x at which y is to be found
+//    private float point(float x1, float xStsart, float yStart, double slope) {
+//        // flag=false;
+//        float y11 = (int) ((slope * (x1 - xStsart)) + yStart);
+//
+//
+//        return y11;
+//    }
 
 
     static float distanceCalc(PointF p1, PointF p2) {
@@ -386,6 +398,9 @@ public class LineC {
                 buffer2.clear();
             } else
                 flag = false;
+            for (int i=0;i<finalList.size();i++){
+                balls.get(finalList.get(i)).isBurst=true;
+            }
 
 
         }
@@ -393,5 +408,95 @@ public class LineC {
 
     }
 
+
+
+
+
+    void ptc(float x1,float y1){
+       dx1= (float) (x1 + (speed *Math.cos(dire.get(i))));
+       dy1= (float) (y1 + (speed * Math.sin(dire.get(i))));
+    }
+
+    void ballMove(Canvas c){
+        xb = xbuffer;
+        yb = ybuffer;
+        //c.drawBitmap(ball,cX-ball.getWidth()/2,cY-ball.getHeight()/2,null);
+
+        if (ballflag) {
+            ptc(xb,yb);
+            lx =dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
+            ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
+            c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
+            shotBall = new RectF(lx, ly, lx +LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
+
+            if ((dx1 -LoadImage.ballImg[ball.index].getWidth() / 2) <= 0) {
+                ballflag = false;
+                i++;
+
+                //System.out.println("slope2 = " + slope2);
+
+            }
+            yb = dy1;
+            xb = dx1;
+            for (int i=0;i<balls.size();i++){
+                if(intersects(balls.get(i).rec,shotBall)){
+                    if (balls.get(i).index==ball.index)
+                    burst=circle.check_col(balls.get(i).rec,shotBall);
+                    break;
+                }
+            }
+            if (burst){
+                identify(balls.get(i).index,i);
+                burst=false;
+                //return;
+            }
+        }
+        else{
+            ptc(xb,yb);
+            lx =dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
+            ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
+            c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
+            shotBall = new RectF(lx, ly, lx + LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
+
+
+            if ((dx1 + LoadImage.ballImg[ball.index].getWidth() / 2) >= displayW) {
+                ballflag = true;
+                i++;
+
+
+            }
+            yb = dy1;
+            xb = dx1;
+            for (int i=0;i<balls.size();i++){
+                if(intersects(balls.get(i).rec,shotBall)){
+                    if (ball.index==balls.get(i).index) {
+                        burst = circle.check_col(balls.get(i).rec, shotBall);
+                        break;
+                    }
+                }
+            }
+            if (burst){
+                identify(balls.get(i).index,i);
+                burst=false;
+                //return;
+            }
+        }
+        if (y > -1 && y <= displayH) {
+            ApplicationView.shoot = false;
+        }
+    }
+    void check_colisiion(RectF r1, RectF r2){
+        for (int i=0;i<row_count*col_count;i++){
+            if(balls.get(i).rec.contains(shotBall)){
+                burst=circle.check_col(balls.get(i).rec,shotBall);
+                break;
+            }
+        }
+        if (burst){
+            identify(balls.get(i).index,i);
+            burst=false;
+            //return;
+        }
+    }
 
 }

@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.RectF;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 
 
 import static android.graphics.Paint.Style.STROKE;
+import static com.tangiapps.shooternew.LineC.dx1;
+import static com.tangiapps.shooternew.LineC.dy1;
 import static com.tangiapps.shooternew.LineC.xb;
 import static com.tangiapps.shooternew.LineC.yb;
 import static com.tangiapps.shooternew.LoadImage.ballImg;
@@ -29,14 +32,14 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             x_cor = 0, y_cor = 0;
     public static boolean isTouchEnable = true;
     static Context contxt;
-    static int levelno = 1, row_count = 11, col_count = 10;
-    float  downX = 0, downY = 0,
-    upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
-    dY = 0;
+    static int levelno = 1, row_count = 11, col_count = 12;
+    float downX = 0, downY = 0,
+            upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
+            dY = 0;
     static boolean isBackgroundTouch = false, isResetButton = false, isGoToNextLevel = false, isQuitPage = false, isSettingPage = false,
             isBackButtonPress = false, isMianPage = false, isResetAppLevel = false, isPlayingMode = false, isLevelPage = false,
             islevelCleared = false, isLevelFailed = false, isNextBtnPressed = false, isSoundOn = true,
-            isMenuBtnPressed = false, isRetryBtnPressed = false, isOptionPage = false, isUpdate = true,isGameOn=false;
+            isMenuBtnPressed = false, isRetryBtnPressed = false, isOptionPage = false, isUpdate = true, isGameOn = false;
     AppThread thread = new AppThread();
     LoadImage loadImage = new LoadImage();
     LevelCleared levelClear = new LevelCleared();
@@ -47,41 +50,43 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     QuitePage quitPage = new QuitePage();
     SettingPage settingPage = new SettingPage();
     Options op = new Options();
-    RectF boardRect;
+    //RectF boardRect;
 
     BackButtonPress backButtonPress = new BackButtonPress();
     DrawString drawString = new DrawString();
     RectF reset, pause;
     ;
     int row = -1, col = -1, delay1 = 0, a = 20;
-    int delayCounter = 0, framecount = 0, framecount1 = 0, framecount2 = 0, birdIndex = 0, totalframe = 6;
-    //__________________________________________________________________My variables_________________________________________________
-    static int anInt;
-    float bux,buy ;
-    Paint pq=new Paint();
+//    int delayCounter = 0, framecount = 0, framecount1 = 0, framecount2 = 0, birdIndex = 0, totalframe = 6;
+//    //__________________________________________________________________My variables_________________________________________________
+//    static int anInt;
+//    float bux, buy;
+    Paint pq = new Paint();
     private int dy;
-    static boolean aBoolean, shootball=false,shoot=false; ;
-    ArrayList<Ball> ballArrayList=new ArrayList<>();
-    ArrayList<Ball> bubble=new ArrayList<>();
-    Rotate rotate=new Rotate();
-    Bitmap bitmap;
+    static boolean aBoolean, shootball = false, shoot = false;
+    ;
+    ArrayList<Ball> ballArrayList = new ArrayList<>();
+    ArrayList<Ball> bubble = new ArrayList<>();
+//    Rotate rotate = new Rotate();
+//    Bitmap bitmap;
+// double slope;
+//    Point p1;
+//    Point p2;
     RectF rec_shooter;
-    static float cX=0,x,y;
-    static float cY=0,xbuffer,ybuffer;
-    double slope;
-    Point p1;
-    Point p2;
-    float xEnd,yEnd,xe1,ye1;
-    double angle,y22;
-    static Paint pp=new Paint();
+    static float cX = 0, x, y;
+    static float cY = 0, xbuffer, ybuffer;
+
+    float xEnd, yEnd, xe1, ye1;
+    double angle, y22;
+    static Paint pp = new Paint();
     float intercept;
-   LineC lp2;
-    Point [] points=new Point[2];
-    static ArrayList<Ball> balls=new ArrayList<>();
-    ArrayList<Ball> bubbles=new ArrayList<>();
-    int[][] gameMatrix=new int[11][10];
-    private float xl,yl;
-    BallPath ballPath=new BallPath();
+    LineC lp2;
+    Point[] points = new Point[2];
+    static ArrayList<Ball> balls = new ArrayList<>();
+    ArrayList<Ball> bubbles = new ArrayList<>();
+    int[][] gameMatrix = new int[11][12];
+    private float xl, yl;
+    //BallPath ballPath = new BallPath();
 
 
     public ApplicationView(Context context, AttributeSet attr) {
@@ -93,7 +98,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         DisplayMetrics = context.getResources().getDisplayMetrics();
         displayW = DisplayMetrics.widthPixels;
         displayH = DisplayMetrics.heightPixels;
-        lp2=new LineC();
+        lp2 = new LineC();
         isMianPage = true;
 
         blockW = displayW / col_count;//*0.13541666666666666666666666666667f;
@@ -101,7 +106,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
 
         loadImage.lodingImage(context);
-       // appLevel();
+        // appLevel();
 
         Audio.getInstance();
         Audio.initSounds(context);
@@ -175,9 +180,9 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
                 }
 
                 gamePlay(c);
-                isGameOn=true;
-                if (isLevelFailed||islevelCleared||isMianPage||isQuitPage||isBackButtonPress||isLevelPage||isSettingPage||isOptionPage){
-                    isGameOn=false;
+                isGameOn = true;
+                if (isLevelFailed || islevelCleared || isMianPage || isQuitPage || isBackButtonPress || isLevelPage || isSettingPage || isOptionPage) {
+                    isGameOn = false;
                 }
             }
             if (isQuitPage) {
@@ -207,42 +212,43 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
 
         c.drawBitmap(LoadImage.pause, ApplicationView.displayW * .97f - LoadImage.pause.getWidth(), ApplicationView.displayH * .1f, AppActivity.cls);
-       c.drawBitmap(LoadImage.shooter,ApplicationView.displayW*.5f-LoadImage.shooter.getWidth(),ApplicationView.displayH*.8f,pp);
+        c.drawBitmap(LoadImage.shooter, ApplicationView.displayW * .5f - LoadImage.shooter.getWidth(), ApplicationView.displayH * .8f, pp);
 
 //        bitmap=getO(LoadImage.shooter, (float) angle);
 //        c.drawBitmap(bitmap,ApplicationView.displayW*.5f-LoadImage.shooter.getWidth(),ApplicationView.displayH*.8f,AppActivity.cls);
         for (int i = 0; i < balls.size(); i++) {
-            if (balls.get(i).isVisible) {
+            if (balls.get(i).isVisible&&!balls.get(i).isBurst) {
                 //c.drawRect(balls.get(i).rec, paint);
                 c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+                //c.drawBitmap(LoadImage.ballImg[balls.get(balls.get(i).pos).index], balls.get(i).x, balls.get(i).y, null);
             }
         }
-        c.drawBitmap(LoadImage.box,ApplicationView.displayW*.3f-LoadImage.box.getWidth(),ApplicationView.displayH*.85f,null);
-        c.drawBitmap(LoadImage.ballImg[3],cX,cY,null);
+        c.drawBitmap(LoadImage.box, ApplicationView.displayW * .3f - LoadImage.box.getWidth(), ApplicationView.displayH * .85f, null);
+        c.drawBitmap(LoadImage.ballImg[3], cX, cY, null);
         if (aBoolean) {
 
             lp2.lineDraw(c);
             //shootball=true;
 
         }
-        if (shootball){
-            shoot=true;
+        if (shootball) {
+            shoot = true;
 //            xb=cX;
 //            yb=cY;
 
             //isTouchEnable=false;
         }
-        if (shoot){
-            lp2.ballPts(c);
-            xbuffer=xb;
-            ybuffer=yb;
+        if (shoot) {
+            lp2.ballMove(c);
+            xbuffer = dx1;
+            ybuffer = dy1;
             //lp2.balldraw(c);
         }
         //if (shootball){
 
         //}
 
-       // c.drawBitmap(LoadImage.ballImg[],ApplicationView.displayW*.3f-LoadImage.box.getWidth(),ApplicationView.displayH*.85f,null);
+        // c.drawBitmap(LoadImage.ballImg[],ApplicationView.displayW*.3f-LoadImage.box.getWidth(),ApplicationView.displayH*.85f,null);
 
         if (islevelCleared == false) {
 
@@ -339,19 +345,19 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
                     downY = (float) event.getY();
                     dX = (float) event.getX();
                     dY = (float) event.getY();
-                    if (isPlayingMode){
-                        aBoolean=true;
-                        lp2.angleC(downX,downY);
+                    if (isPlayingMode) {
+                        aBoolean = true;
+                        lp2.angleC(downX, downY);
                     }
-                        shootball=false;
+                    shootball = false;
 //                    drawLineByLength(cX,cY,angle,800);
 
                     if (isBackgroundTouch == false) {
 
 
                         //System.out.println("  within back move ******************");
-                        int down_X = (int) event.getX();
-                        int down_Y = (int) event.getY();
+//                        int down_X = (int) event.getX();
+//                        int down_Y = (int) event.getY();
 
 
 //					if (rset.contains(downX, downY)) {
@@ -387,17 +393,18 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
                     uX = (float) event.getX();
                     upY = (float) event.getY();
                     uY = (float) event.getY();
-                    aBoolean=false;
-                    if (isPlayingMode&&!aBoolean){
-                       // ballPath.setBall(LoadImage.ballImg[3]);
-                        //shootball=true;
-                    }
-                    if (isGameOn){
-                       shootball=true;
+
+                    if (isGameOn && aBoolean) {
+                        shootball = true;
 //                        System.out.println("event = " + event);
 //                        System.out.println("shootball = " + shootball);
                     }
-                   // lp2.path.reset();
+                    aBoolean = false;
+                    if (isPlayingMode && !aBoolean) {
+                        // ballPath.setBall(LoadImage.ballImg[3]);
+                        //shootball=true;
+                    }
+                    // lp2.path.reset();
                     if (isBackgroundTouch == false) {
 
                     }
@@ -427,10 +434,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
                     dY = (float) event.getY();
                     lp2.path.reset();
 
-                    if (isPlayingMode){
-                        lp2.angleC(downX,downY);
+                    if (isPlayingMode) {
+                        lp2.angleC(downX, downY);
                     }
-                 //   System.out.println(downX+"    "+downY);
+                    //   System.out.println(downX+"    "+downY);
 //                    drawLineByLength(cX,cY,angle,800);
 
 
@@ -485,7 +492,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         }
 
 
-       gameMatrix= appMatrix.levelMatrix(levelno);
+        gameMatrix = appMatrix.levelMatrix(levelno);
         Create();
 
     }
@@ -532,25 +539,26 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
         }
     }
+
     //__________________________________________________________________My methods_________________________________________________
-void initshooter(){
-    float x = (float) (ApplicationView.displayW*.5f-LoadImage.shooter.getWidth());
-    float y = (float) (ApplicationView.displayH*.8f);
-    //System.out.println(x+"  "+y);
-    rec_shooter=new RectF(x,y, x+ LoadImage.shooter.getWidth(),y+ LoadImage.shooter.getHeight());
+    void initshooter() {
+        float x = (float) (ApplicationView.displayW * .5f - LoadImage.shooter.getWidth());
+        float y = (float) (ApplicationView.displayH * .8f);
+        //System.out.println(x+"  "+y);
+        rec_shooter = new RectF(x, y, x + LoadImage.shooter.getWidth(), y + LoadImage.shooter.getHeight());
 
-    cX= x+ LoadImage.shooter.getWidth();
-    cX-=36;
-    cY=y+ LoadImage.shooter.getHeight();
-    cY-=18;
-    xe1=cX;
-    ye1=cY;
-    xbuffer=cX;
-    ybuffer=cY;
- //System.out.println(cX+"  "+cY);
+        cX = x + LoadImage.shooter.getWidth();
+        cX -= 36;
+        cY = y + LoadImage.shooter.getHeight();
+        cY -= 18;
+        xe1 = cX;
+        ye1 = cY;
+        xbuffer = cX;
+        ybuffer = cY;
+        //System.out.println(cX+"  "+cY);
 
 
-}
+    }
 
 
     public Bitmap getO(Bitmap bitmap, float orientation) {
@@ -558,48 +566,51 @@ void initshooter(){
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
         Matrix mtx = new Matrix();
-        mtx.setRotate(orientation,cX,cY);
+        mtx.setRotate(orientation, cX, cY);
 
         return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
     }
-    void lineEq(int slope,int y,int x){
-        intercept=y-(slope*x);
+
+    void lineEq(int slope, int y, int x) {
+        intercept = y - (slope * x);
     }
 
-    void initballs(){
+    void initballs() {
 
     }
-     void Create() {
+
+    void Create() {
         //if (balls.size() < (row_count * col_count)) {
 
 //        if (isUpdate || islevelCleared) {
 //           balls.clear();
 //        }
-        x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 3;
-        y = (float) (displayH - (row_count * ballImg[0].getHeight())) / 3;
+        x = (float) (displayW - (col_count * ballImg[0].getWidth()))/10 ;
+        y = (float) (displayH - (row_count * ballImg[0].getHeight()))/12 ;
         xl = ballImg[0].getWidth();
         yl = ballImg[0].getHeight();
+        int p=0;
         for (int i = 0; i < row_count; i++) {
             for (int j = 0; j < col_count; j++) {
 
-                balls.add( new Ball(x, y, gameMatrix[i][j], true));
+                balls.add(new Ball(x, y, gameMatrix[i][j], true,p));
 
                 x = (float) (x + xl);
-
+                p++;
             }
-            x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 2;
+            x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 10;
 
             y = (float) (y + yl);
 
         }
-        System.out.println("balls.size  " +balls.size());
+        System.out.println("balls.size  " + balls.size());
 
 
     }
-    void shootingLogic(){
+
+    void shootingLogic() {
 
     }
-
 
 
 }
