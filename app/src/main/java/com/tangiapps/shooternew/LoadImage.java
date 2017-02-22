@@ -179,52 +179,52 @@ public class LoadImage {
 
 		ballImg[0]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a1);
-		ballImg[0] = Bitmap.createScaledBitmap(ballImg[0], (int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[0] = Bitmap.createScaledBitmap(ballImg[0], (int) (displayW/15),
+				(int) (displayW/15), true);
 
 		ballImg[1]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a2);
-		ballImg[1] = Bitmap.createScaledBitmap(ballImg[1], (int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[1] = Bitmap.createScaledBitmap(ballImg[1], (int) (displayW/15),
+				(int) (displayW/15), true);
 
 		ballImg[2]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a3);
-		ballImg[2] = Bitmap.createScaledBitmap(ballImg[2], (int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[2] = Bitmap.createScaledBitmap(ballImg[2], (int) (displayW/15),
+				(int) (displayW/15), true);
 
 		ballImg[3]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a4);
-		ballImg[3] = Bitmap.createScaledBitmap(ballImg[3], (int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[3] = Bitmap.createScaledBitmap(ballImg[3], (int) (displayW/15),
+				(int) (displayW/15), true);
 
 		ballImg[4]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a5);
-		ballImg[4] = Bitmap.createScaledBitmap(ballImg[4],(int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[4] = Bitmap.createScaledBitmap(ballImg[4],(int) (displayW/15),
+				(int) (displayW/15), true);
 		ballImg[5]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a6);
-		ballImg[5] = Bitmap.createScaledBitmap(ballImg[5],(int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[5] = Bitmap.createScaledBitmap(ballImg[5],(int) (displayW/15),
+				(int) (displayW/15), true);
 		ballImg[6]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a7);
-		ballImg[6] = Bitmap.createScaledBitmap(ballImg[6],(int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[6] = Bitmap.createScaledBitmap(ballImg[6],(int) (displayW/15),
+				(int) (displayW/15), true);
 		ballImg[7]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a8);
-		ballImg[7] = Bitmap.createScaledBitmap(ballImg[7],(int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[7] = Bitmap.createScaledBitmap(ballImg[7],(int) (displayW/15),
+				(int) (displayW/15), true);
 		ballImg[8]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a9);
-		ballImg[8] = Bitmap.createScaledBitmap(ballImg[8],(int) (displayW/12),
-				(int) (displayW/12), true);
+		ballImg[8] = Bitmap.createScaledBitmap(ballImg[8],(int) (displayW/15),
+				(int) (displayW/15), true);
 		ballImg[9]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.a10);
-		ballImg[9] = Bitmap.createScaledBitmap(ballImg[9],(int) (displayW/11),
-				(int) (displayW/11), true);
+		ballImg[9] = Bitmap.createScaledBitmap(ballImg[9],(int) (displayW/15),
+				(int) (displayW/15), true);
 		bubble= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.bubble);
-		bubble= Bitmap.createScaledBitmap(bubble,(int) (displayW/10),
-				(int) (displayW/10), true);
+		bubble= Bitmap.createScaledBitmap(bubble,(int) (displayW/13),
+				(int) (displayW/13), true);
 
 		shooter = BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.shooter);

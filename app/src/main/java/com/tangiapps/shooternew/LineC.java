@@ -1,15 +1,13 @@
 package com.tangiapps.shooternew;
 
-import android.graphics.Bitmap;
+
 import android.graphics.Canvas;
 import android.graphics.Path;
-import android.graphics.Point;
+
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 
-import org.jetbrains.annotations.Contract;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -39,21 +37,21 @@ public class LineC {
    static float dx1, dy1, x, y;
     static double angle, slope;
     boolean flag;
-    Point p[] = new Point[2];
+    //Point p[] = new Point[2];
     Path path = new Path();
     float x22, y22;
     double slope1;
     static double slope2, dist;
     static boolean ballflag;
     private float lx, ly;
-    private BallPath ballPath;
+    //private BallPath ballPath;
     Ball ball;
-    Bitmap ball1 = LoadImage.ballImg[5];
+    //Bitmap ball1 = LoadImage.ballImg[5];
     ArrayList<Double> dire= new ArrayList<>();
-    ArrayList<Double> direction= new ArrayList<>();
+    //ArrayList<Double> direction= new ArrayList<>();
     static float xb, yb;
     RectF shotBall;
-    boolean burst;
+    static boolean collision,endshoot;
     double speed = 8;
     float xE = (float) (displayW * 0.0375);
     int i=0;
@@ -67,8 +65,9 @@ public class LineC {
 
     //__________________________________Methods_______________________________________________________
     void angleC(float dwnX, float dwnY) {
-        ball = new Ball( 0,  0, 3,true,0 );
-        burst=false;
+        ball = new Ball( 0,  0, 3,true );
+        endshoot=false;
+        collision=false;
         dire.clear();
         dx1 = cX;
         x22 = cX;
@@ -252,7 +251,7 @@ public class LineC {
         Object[] array = new Object[1];
         int pointsBuffer;
         //System.out.println("index  " + index + "   position  " + position);
-        //balls.get(position).isVisible = false;
+        //balls.get(position).isBurst = false;
         // int pos = position;
         boolean flag = true;
         array[0] = pos;
@@ -262,17 +261,17 @@ public class LineC {
             for (int i = 0; i < array.length; i++) {
                 pos = (int) array[i];
                 if (pos + 1 < (row_count * col_count) && (pos + 1) % col_count != 0) {//checks at position right to the clicked position
-                    if (balls.get(pos + 1).isVisible && index == balls.get(pos + 1).index) {
+                    if (balls.get(pos + 1).isBurst && index == balls.get(pos + 1).index) {
                         buffer1.add(pos + 1);
-                        balls.get(pos + 1).isVisible = false;
+                        balls.get(pos + 1).isBurst = true;
                         //System.out.println("1 at pos   " + (pos + 1));
 
                     }
                 }
                 if (pos + step < (row_count * col_count)) {//checks at position below the clicked position
-                    if (balls.get(pos + step).isVisible && index == balls.get(pos + step).index) {
+                    if (balls.get(pos + step).isBurst && index == balls.get(pos + step).index) {
                         buffer1.add(pos + step);
-                        balls.get(pos + step).isVisible = false;
+                        balls.get(pos + step).isBurst = true;
                         //System.out.println("3 at pos   " + (pos + step));
                     }
                 }
@@ -291,27 +290,27 @@ public class LineC {
                 if (pos - 1 >= 0 && stepb) {//checks at position left to the clicked position
 
 
-                    if (balls.get(pos - 1).isVisible && index == balls.get(pos - 1).index) {
+                    if (balls.get(pos - 1).isBurst && index == balls.get(pos - 1).index) {
                         buffer1.add(pos - 1);
-                        balls.get(pos - 1).isVisible = false;
+                        balls.get(pos - 1).isBurst = true;
                         //System.out.println("2 at pos   " + (pos - 1));
                     }
                 }
 
 
                 if (pos - step >= 0) {//checks at position above the clicked position
-                    if (balls.get(pos - step).isVisible && index == balls.get(pos - step).index) {
+                    if (balls.get(pos - step).isBurst && index == balls.get(pos - step).index) {
                         buffer1.add(pos - step);
-                        balls.get(pos - step).isVisible = false;
+                        balls.get(pos - step).isBurst = true;
                         //System.out.println("4 at pos   " + (pos - 8));
                     }
                 }
 
                 //______________________________for checking right and left of above position_________________________________________________________________________
-                if (above + 1 < (row_count * col_count) && (above + 1) % col_count != 0) {//checks at aboveition right to the clicked aboveition
-                    if (balls.get(above + 1).isVisible && index == balls.get(above + 1).index) {
+                if (above + 1 < (row_count * col_count) && (above + 1) % col_count != 0&&(above+1)>0) {//checks at aboveition right to the clicked aboveition
+                    if (balls.get(above + 1).isBurst && index == balls.get(above + 1).index) {
                         buffer1.add(above + 1);
-                        balls.get(above + 1).isVisible = false;
+                        balls.get(above + 1).isBurst = true;
                         //System.out.println("1 at above   " + (above + 1));
 
                     }
@@ -332,17 +331,17 @@ public class LineC {
                 if (above - 1 >= 0 && stepb) {//checks at aboveition left to the clicked aboveition
 
 
-                    if (balls.get(above - 1).isVisible && index == balls.get(above - 1).index) {
+                    if (balls.get(above - 1).isBurst && index == balls.get(above - 1).index) {
                         buffer1.add(above - 1);
-                        balls.get(above - 1).isVisible = false;
+                        balls.get(above - 1).isBurst = true;
                         //System.out.println("2 at above   " + (above - 1));
                     }
                 }
                 //_________________________________for checking right and left of below position___________________________________________________________________________________________
-                if (below + 1 < (row_count * col_count) && (below + 1) % col_count != 0) {//checks at belowition right to the clicked belowition
-                    if (balls.get(below + 1).isVisible && index == balls.get(below + 1).index) {
+                if (below + 1 < (row_count * col_count) && (below + 1) % col_count != 0) {//checks at position right to the clicked position
+                    if (balls.get(below + 1).isBurst && index == balls.get(below + 1).index) {
                         buffer1.add(below + 1);
-                        balls.get(below + 1).isVisible = false;
+                        balls.get(below + 1).isBurst = true;
                         //System.out.println("1 at below   " + (below + 1));
 
                     }
@@ -363,9 +362,9 @@ public class LineC {
                 if (below - 1 >= 0 && stepb) {//checks at belowition left to the clicked belowition
 
 
-                    if (balls.get(below - 1).isVisible && index == balls.get(below - 1).index) {
+                    if (balls.get(below - 1).isBurst && index == balls.get(below - 1).index) {
                         buffer1.add(below - 1);
-                        balls.get(below - 1).isVisible = false;
+                        balls.get(below - 1).isBurst = true;
                         //System.out.println("2 at below   " + (below - 1));
                     }
                 }
@@ -398,13 +397,14 @@ public class LineC {
                 buffer2.clear();
             } else
                 flag = false;
-            for (int i=0;i<finalList.size();i++){
-                balls.get(finalList.get(i)).isBurst=true;
-            }
+
 
 
         }
-
+        for (int i=0;i<finalList.size();i++){
+            balls.get(finalList.get(i)).isBurst=true;
+        }
+        collision=false;
 
     }
 
@@ -412,7 +412,7 @@ public class LineC {
 
 
 
-    void ptc(float x1,float y1){
+    void getnewPoints(float x1,float y1){
        dx1= (float) (x1 + (speed *Math.cos(dire.get(i))));
        dy1= (float) (y1 + (speed * Math.sin(dire.get(i))));
     }
@@ -423,7 +423,7 @@ public class LineC {
         //c.drawBitmap(ball,cX-ball.getWidth()/2,cY-ball.getHeight()/2,null);
 
         if (ballflag) {
-            ptc(xb,yb);
+            getnewPoints(xb,yb);
             lx =dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
             ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
             c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
@@ -438,21 +438,10 @@ public class LineC {
             }
             yb = dy1;
             xb = dx1;
-            for (int i=0;i<balls.size();i++){
-                if(intersects(balls.get(i).rec,shotBall)){
-                    if (balls.get(i).index==ball.index)
-                    burst=circle.check_col(balls.get(i).rec,shotBall);
-                    break;
-                }
-            }
-            if (burst){
-                identify(balls.get(i).index,i);
-                burst=false;
-                //return;
-            }
+
         }
         else{
-            ptc(xb,yb);
+            getnewPoints(xb,yb);
             lx =dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
             ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
             c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
@@ -462,40 +451,51 @@ public class LineC {
             if ((dx1 + LoadImage.ballImg[ball.index].getWidth() / 2) >= displayW) {
                 ballflag = true;
                 i++;
-
-
             }
             yb = dy1;
             xb = dx1;
-            for (int i=0;i<balls.size();i++){
-                if(intersects(balls.get(i).rec,shotBall)){
-                    if (ball.index==balls.get(i).index) {
-                        burst = circle.check_col(balls.get(i).rec, shotBall);
-                        break;
-                    }
-                }
+//            for (int i=0;i<balls.size();i++){
+//                if(intersects(balls.get(i).rec,shotBall)){
+//                    if (ball.index==balls.get(i).index) {
+//                        circle.check_col(balls.get(i).rec, shotBall);
+//
+//                        System.out.println("intersection");
+//                        break;
+//                    }
+//                }
+//            }
+//            if (collision){
+//                //identify(balls.get(i).index,i);
+//                endshoot=true;
+//                // ApplicationView.shoot = false;
+//                collision=false;
+//                //return;
+//            }
+        }
+        for (int i=0;i<balls.size();i++){
+            if(intersects(balls.get(i).rec,shotBall)){
+                if (balls.get(i).index==ball.index)
+                    circle.check_col(balls.get(i).rec,shotBall);
+                //System.out.println("intersection");
+
+                break;
             }
-            if (burst){
-                identify(balls.get(i).index,i);
-                burst=false;
-                //return;
-            }
+        }
+        if (collision){
+            identify(balls.get(i).index,i);
+            endshoot=true;
+            // ApplicationView.shoot = false;
+            collision=false;
+
+            //return;
         }
         if (y > -1 && y <= displayH) {
             ApplicationView.shoot = false;
         }
     }
     void check_colisiion(RectF r1, RectF r2){
-        for (int i=0;i<row_count*col_count;i++){
-            if(balls.get(i).rec.contains(shotBall)){
-                burst=circle.check_col(balls.get(i).rec,shotBall);
-                break;
-            }
-        }
-        if (burst){
-            identify(balls.get(i).index,i);
-            burst=false;
-            //return;
+        for (int i=0;i<balls.size()-1;i++){
+
         }
     }
 

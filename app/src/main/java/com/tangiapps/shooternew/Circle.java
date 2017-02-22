@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 public class Circle extends ShapeDrawable {
 RectF ball1,ball2;
     float radius;
-   boolean check_col(RectF r1, RectF r2){
+   void check_col(RectF r1, RectF r2){
        float centerX,centerY,centerX1,centerY1;
        radius=LoadImage.ballImg[3].getWidth()/2;
        centerX=r1.centerX();
@@ -25,12 +25,12 @@ RectF ball1,ball2;
        double distance = Math.sqrt(Math.pow((centerX1 - centerX), 2) + Math.pow((centerY1 - centerY), 2));
       // distance= Float.parseFloat(new DecimalFormat("##.##").format(distance));
        if (distance>(radius*2)){
-           return false;
+          LineC.collision=false;
        }
        if (distance<=(radius*2)) {
-           return true;
+           LineC.collision=true;
        }
-       return false;
+
    }
 
 }

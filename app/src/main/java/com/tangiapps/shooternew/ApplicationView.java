@@ -18,6 +18,8 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 
 
+import static android.graphics.Paint.Style.FILL;
+import static android.graphics.Paint.Style.FILL_AND_STROKE;
 import static android.graphics.Paint.Style.STROKE;
 import static com.tangiapps.shooternew.LineC.dx1;
 import static com.tangiapps.shooternew.LineC.dy1;
@@ -30,9 +32,9 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     public static SurfaceHolder surfaceHolder;
     public static float blockW, blockH, displayW, displayH,
             x_cor = 0, y_cor = 0;
-    public static boolean isTouchEnable = true;
+    public static boolean isTouchEnable = true,boooooo=true;
     static Context contxt;
-    static int levelno = 1, row_count = 11, col_count = 12;
+    static int levelno = 1, row_count = 11, col_count = 13;
     float downX = 0, downY = 0,
             upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
             dY = 0;
@@ -82,9 +84,9 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     float intercept;
     LineC lp2;
     Point[] points = new Point[2];
-    static ArrayList<Ball> balls = new ArrayList<>();
+    static ArrayList<Ball> balls = new ArrayList<>(400);
     ArrayList<Ball> bubbles = new ArrayList<>();
-    int[][] gameMatrix = new int[11][12];
+    int[][] gameMatrix = new int[11][13];
     private float xl, yl;
     //BallPath ballPath = new BallPath();
 
@@ -120,7 +122,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         pq.setColor(getResources().getColor(R.color.black));
         pq.setTextSize(32);
         pq.setStrokeWidth(15);
-        pq.setStyle(STROKE);
+        pq.setStyle(FILL_AND_STROKE);
     }
 
     private void sound_initialization() {
@@ -217,12 +219,19 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 //        bitmap=getO(LoadImage.shooter, (float) angle);
 //        c.drawBitmap(bitmap,ApplicationView.displayW*.5f-LoadImage.shooter.getWidth(),ApplicationView.displayH*.8f,AppActivity.cls);
         for (int i = 0; i < balls.size(); i++) {
-            if (balls.get(i).isVisible&&!balls.get(i).isBurst) {
-                //c.drawRect(balls.get(i).rec, paint);
-                c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
-                //c.drawBitmap(LoadImage.ballImg[balls.get(balls.get(i).pos).index], balls.get(i).x, balls.get(i).y, null);
+            if (balls.get(i).isAvailable) {
+                if (balls.get(i).isVisible && !balls.get(i).isBurst) {
+                    //c.drawRect(balls.get(i).rec, paint);
+                    //c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+                    c.drawRect(balls.get(i).rec,pq);
+                    c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+                }
+            }
+            if (boooooo) {
+                //System.out.println("balls.get(balls.get(" + i + ").pos) =  " + i);
             }
         }
+        boooooo=false;
         c.drawBitmap(LoadImage.box, ApplicationView.displayW * .3f - LoadImage.box.getWidth(), ApplicationView.displayH * .85f, null);
         c.drawBitmap(LoadImage.ballImg[3], cX, cY, null);
         if (aBoolean) {
@@ -232,7 +241,10 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
         }
         if (shootball) {
-            shoot = true;
+            shoot=true;
+            if (LineC.endshoot)
+            shoot = false;
+
 //            xb=cX;
 //            yb=cY;
 
@@ -593,7 +605,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         for (int i = 0; i < row_count; i++) {
             for (int j = 0; j < col_count; j++) {
 
-                balls.add(new Ball(x, y, gameMatrix[i][j], true,p));
+                balls.add(new Ball(x, y, gameMatrix[i][j], true));
 
                 x = (float) (x + xl);
                 p++;
@@ -603,6 +615,9 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             y = (float) (y + yl);
 
         }
+        System.out.println("balls.size  " + balls.size());
+
+        balls.add(new Ball(158,572+yl,2,true));
         System.out.println("balls.size  " + balls.size());
 
 

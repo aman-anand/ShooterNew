@@ -15,22 +15,22 @@ public class Ball {
     int index;
     int pos;
     boolean isVisible,isBurst;
-    boolean isLeaf;
+    boolean isAvailable;
     boolean isClick;
     RectF rec=new RectF();
     float disH= (float) ApplicationView.displayH;
     float disW= (float) ApplicationView.displayW;
 
-    Ball(float x1, float y1, int index1, boolean a,int p){
-        x=x1;
-        y=y1;
+    Ball(double x1, double y1, int index1, boolean a){
+        x= (float) x1;
+        y= (float) y1;
         index=index1;
         isVisible=a;
         isBurst=false;
-        isLeaf=false;
-        pos=p;
+        isAvailable=a;
+
         //For rectangle
-        rec=new RectF(x,y, x+ ballImg[index].getWidth(),y+ ballImg[index].getHeight());
+        rec=new RectF(x+6,y+6, x+ ballImg[index].getWidth()-6,y+ ballImg[index].getHeight()-6);
 
     }
     Ball(float x1,float y1, boolean a){
