@@ -17,10 +17,11 @@ public class LoadImage {
 			
 			 home,home1, next,next1,bombsprit,load,soundon,play,play1,option,option1,share,share1,shooter;
 	//__________________________________________________________________My variables_________________________________________________
-	public static Bitmap  ballImg[]=new Bitmap[10];
+	public static Bitmap  ballImg[]=new Bitmap[11];
 	static  Bitmap bubble;
-	
-	
+ static Bitmap topbar;
+
+
 	public void lodingImage(Context ctx) {
 		
 		
@@ -221,10 +222,10 @@ public class LoadImage {
 				R.drawable.a10);
 		ballImg[9] = Bitmap.createScaledBitmap(ballImg[9],(int) (displayW/15),
 				(int) (displayW/15), true);
-		bubble= BitmapFactory.decodeResource(ctx.getResources(),
+		ballImg[10]= BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.bubble);
-		bubble= Bitmap.createScaledBitmap(bubble,(int) (displayW/13),
-				(int) (displayW/13), true);
+		ballImg[10]= Bitmap.createScaledBitmap(ballImg[10],(int) (displayW/15),
+				(int) (displayW/15), true);
 
 		shooter = BitmapFactory.decodeResource(ctx.getResources(),
 				R.drawable.shooter);
@@ -232,6 +233,8 @@ public class LoadImage {
 				true);
 		box=BitmapFactory.decodeResource(ctx.getResources(),R.drawable.box);
 		box=Bitmap.createScaledBitmap(box,(int) (displayW*.2f),(int) (displayW*.2f),true);
+		topbar=BitmapFactory.decodeResource(ctx.getResources(),R.drawable.topbar);
+		topbar=Bitmap.createScaledBitmap(topbar,(int) (displayW),(int) (displayW*.2f),true);
 
 
 

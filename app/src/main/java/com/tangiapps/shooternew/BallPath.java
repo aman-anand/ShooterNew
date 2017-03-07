@@ -6,12 +6,14 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.shapes.Shape;
 
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 
+import static android.graphics.RectF.intersects;
 import static com.tangiapps.shooternew.ApplicationView.balls;
 import static com.tangiapps.shooternew.ApplicationView.cX;
 import static com.tangiapps.shooternew.ApplicationView.cY;
@@ -78,7 +80,6 @@ public class BallPath {
 //    }
 
 
-
     //___________________________________________________________________________________________________________________________________________________
 //    public Shape s=new Shape() {
 //        @Override
@@ -103,8 +104,6 @@ public class BallPath {
 //    }
 
 
-
-
     private void identify(int index, int pos) {
         ArrayList<Integer> buffer1 = new ArrayList<>();
         ArrayList<Integer> buffer2 = new ArrayList<>();
@@ -124,15 +123,16 @@ public class BallPath {
         while (flag) {
             for (int i = 0; i < array.length; i++) {
                 pos = (int) array[i];
-                if (pos + 1 < (row_count * col_count) && (pos + 1) % col_count != 0) {//checks at position right to the clicked position
-                    if (balls.get(pos + 1).isVisible && index == balls.get(pos + 1).index) {
+                if (pos + 1 < balls.size() && (pos + 1) % col_count != 0) {//checks at position right to the clicked position
+                    // if (balls.get(pos + 1).isVisible && index == balls.get(pos + 1).index) {
+                    if (intersects(balls.get(pos).rec, balls.get(pos + 1).rec) && index == balls.get(pos + 1).index) {
                         buffer1.add(pos + 1);
                         balls.get(pos + 1).isVisible = false;
                         //System.out.println("1 at pos   " + (pos + 1));
 
                     }
                 }
-                if (pos + step < (row_count * col_count)) {//checks at position below the clicked position
+                if (pos + step < balls.size()) {//checks at position below the clicked position
                     if (balls.get(pos + step).isVisible && index == balls.get(pos + step).index) {
                         buffer1.add(pos + step);
                         balls.get(pos + step).isVisible = false;
@@ -141,7 +141,7 @@ public class BallPath {
                 }
                 boolean stepb = false;
                 int c12 = 0;
-                for (int q = col_count - 1; q < (row_count * col_count); q += step) {
+                for (int q = col_count - 1; q < balls.size(); q += step) {
                     if (pos - 1 == q) {
                         c12++;
                     }
@@ -171,7 +171,7 @@ public class BallPath {
                 }
 
                 //______________________________for checking right and left of above position_________________________________________________________________________
-                if (above + 1 < (row_count * col_count) && (above + 1) % col_count != 0&&(above+1)>0) {//checks at aboveition right to the clicked aboveition
+                if (above + 1 < balls.size() && (above + 1) % col_count != 0 && (above + 1) > 0) {//checks at aboveition right to the clicked aboveition
                     if (balls.get(above + 1).isVisible && index == balls.get(above + 1).index) {
                         buffer1.add(above + 1);
                         balls.get(above + 1).isVisible = false;
@@ -182,7 +182,7 @@ public class BallPath {
 
                 stepb = false;
                 c12 = 0;
-                for (int q = col_count - 1; q < (row_count * col_count); q += step) {
+                for (int q = col_count - 1; q < balls.size(); q += step) {
                     if (above - 1 == q) {
                         c12++;
                     }
@@ -202,7 +202,7 @@ public class BallPath {
                     }
                 }
                 //_________________________________for checking right and left of below position___________________________________________________________________________________________
-                if (below + 1 < (row_count * col_count) && (below + 1) % col_count != 0) {//checks at position right to the clicked position
+                if (below + 1 < balls.size() && (below + 1) % col_count != 0) {//checks at position right to the clicked position
                     if (balls.get(below + 1).isVisible && index == balls.get(below + 1).index) {
                         buffer1.add(below + 1);
                         balls.get(below + 1).isVisible = false;
@@ -213,7 +213,7 @@ public class BallPath {
 
                 stepb = false;
                 c12 = 0;
-                for (int q = col_count - 1; q < (row_count * col_count); q += step) {
+                for (int q = col_count - 1; q < balls.size(); q += step) {
                     if (below - 1 == q) {
                         c12++;
                     }
@@ -263,21 +263,133 @@ public class BallPath {
                 flag = false;
 
 
-
         }
-        for (int i=0;i<finalList.size();i++){
-            balls.get(finalList.get(i)).isBurst=true;
+        for (int i = 0; i < finalList.size(); i++) {
+            balls.get(finalList.get(i)).isBurst = true;
         }
         //collision=false;
 
     }
 
+    boolean aflag = false, bflag = false, flag = false, right, left, aright, aleft, bright, bleft;
+    int above = 0, below = 0;
 
-    void ident(int index,int p){
+    void setBoolean(int p) {
 
+        if (p - 1 >= 0 && p % col_count != 0) {
+            left = true;
+        }
+
+        if (p + 1 < balls.size() && (p + 1) % col_count != 0) {
+            right = true;
+        }
+        if (p + 1 < balls.size() && (p + 1) % col_count != 0) {
+            right = true;
+        }
+        if (p - col_count >= 0) {
+            above = p - col_count;
+            aflag = true;
+        }
+        if (p + col_count < balls.size()) {
+            below = p + col_count;
+            bflag = true;
+        }
+        if (aflag) {
+            if (above - 1 >= 0 && above % col_count != 0) {
+                aleft = true;
+            }
+        }
+        if (aflag) {
+            if (above + 1 < balls.size() && (above + 1) % col_count != 0) {
+                aright = true;
+            }
+        }
+
+        if (bflag) {
+            if ((below) % col_count != 0) {
+                bleft = true;
+            }
+        }
+        if (bflag) {
+            if ((below + 1 < balls.get(balls.size() - 1).pos)) {
+                bright = true;
+            }
+        }
+    }
+
+    void ident(int index, int p) {
+        ArrayList<Integer> b1 = new ArrayList<>();
+        ArrayList<Integer> b2 = new ArrayList<>();
+        ArrayList<Integer> finalList = new ArrayList<>();
+        finalList.add(p);
+        //int above=0,below=0;
+        // boolean aflag=false,bflag=false,flag = false,right,left,aright,aleft,bright,bleft;
+        Object[] array = new Object[1];
+        array[0] = p;
+        int pos1;
+        RectF rec;
+
+
+        while (flag) {
+
+            for (int i = 0; i < array.length; i++) {
+                pos1 = (int) array[i];
+                rec = balls.get(pos1).rec;
+                // setBoolean(pos1);
+                for (int j = 0; j < balls.size(); j++) {
+                    if (j == p) {
+                        continue;
+                    }
+                    if (intersects(rec, balls.get(j).rec)) {
+                        b1.add(i);
+                    }
+                }
+            }
+
+            for (int i = 0; i < b1.size(); i++) {
+                if (finalList.contains(b1.get(i))) {
+                    continue;
+                }
+                if (balls.get(b1.get(i)).isAvailable) {
+                    if (index == balls.get(b1.get(i)).index) {
+                        b2.add(b1.get(i));
+                        balls.get(b1.get(i)).isAvailable = false;
+                    }
+                }
+            }
+
+
+            if (!b2.isEmpty()) {
+                finalList.addAll(b2);
+                array = b2.toArray();
+                b1.clear();
+                b2.clear();
+            } else {
+                flag = false;
+            }
+
+        }
+
+        for (int i = 0; i < finalList.size(); i++) {
+            balls.get(finalList.get(i)).isVisible=false;
+        }
 
     }
 
+    void ident2(int index, int pos) {
+        RectF rec = balls.get(pos).rec;
+        for (int i = 0; i < balls.size(); i++) {
+            if (i == pos) {
+                continue;
+            }
+            if (intersects(rec, balls.get(i).rec)) {
 
+            }
+        }
+    }
 
 }
+
+
+
+

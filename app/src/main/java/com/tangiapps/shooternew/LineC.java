@@ -18,6 +18,7 @@ import static com.tangiapps.shooternew.ApplicationView.cY;
 import static com.tangiapps.shooternew.ApplicationView.col_count;
 import static com.tangiapps.shooternew.ApplicationView.displayH;
 import static com.tangiapps.shooternew.ApplicationView.displayW;
+import static com.tangiapps.shooternew.ApplicationView.isLevelFailed;
 import static com.tangiapps.shooternew.ApplicationView.pp;
 import static com.tangiapps.shooternew.ApplicationView.balls;
 import static com.tangiapps.shooternew.ApplicationView.row_count;
@@ -33,10 +34,10 @@ import static com.tangiapps.shooternew.ApplicationView.ybuffer;
 public class LineC {
 
     //______________________________Variables________________________________________________________
-    Circle circle=new Circle();
+
    static float dx1, dy1, x, y;
     static double angle, slope;
-    boolean flag;
+
     //Point p[] = new Point[2];
     Path path = new Path();
     float x22, y22;
@@ -51,13 +52,16 @@ public class LineC {
     //ArrayList<Double> direction= new ArrayList<>();
     static float xb, yb;
     RectF shotBall;
-    static boolean collision,endshoot;
+    static boolean collision,endshoot,drawLineB,newsetter=false;
     double speed = 8;
     float xE = (float) (displayW * 0.0375);
     int i=0;
+    int above=0,below=0;
+    boolean aflag=false,flag = false;
+
 
     LineC() {
-        speed = displayH*0.009677;
+        speed = displayH*0.01;
         xb = cX;
         xE = (float) (displayW * 0.04166);
         yb = cY;
@@ -65,7 +69,8 @@ public class LineC {
 
     //__________________________________Methods_______________________________________________________
     void angleC(float dwnX, float dwnY) {
-        ball = new Ball( 0,  0, 3,true );
+        drawLineB=false;
+        ball = new Ball( 0,  0, 3,true,0);
         endshoot=false;
         collision=false;
         dire.clear();
@@ -79,6 +84,9 @@ public class LineC {
         double yDiff = cY - dwnY;
 
         angle = Math.toDegrees(Math.atan2(yDiff, xDiff));
+        if (angle>25&&angle<160){
+            drawLineB=true;
+        }
 //        System.out.println("angle = " + angle);
         float xEnd = (int) (cX - (Math.cos(Math.toRadians(angle)) * 1500));
         float yEnd = (int) (cY - (Math.sin(Math.toRadians(angle)) * 1500));
@@ -118,31 +126,39 @@ public class LineC {
 
     public void lineDraw(Canvas c) {
 
-        dist = 0;
-        while (y22 > -1 && y22 <= displayH) {
-            if (flag) {
-                y = formLineL(x22, y22, slope1);
-                dist += reflec(x22, y22, xE, y);
-                path.lineTo(xE, y);
-                x22 = xE;
-                y22 = y;
-                y = 0;
-                slope1 *= -1;
-                flag = false;
-            } else {
-                y = formLineR(x22, y22, slope1);
-                dist += reflec(x22, y22, displayW - xE, y);
-                path.lineTo(displayW - xE, y);
-                x22 = (int) displayW - xE;
-                y22 = y;
-                y = 0;
-                slope1 *= -1;
-                flag = true;
+        if (drawLineB) {
+            dist = 0;
+            while (y22 > -1 && y22 <= displayH) {
+                if (flag) {
+                    y = formLineL(x22, y22, slope1);
+                    dist += reflec(x22, y22, xE, y);
+                    path.lineTo(xE, y);
+                    if (y<=0){
+                        drawLineB=false;
+                    }
+                    x22 = xE;
+                    y22 = y;
+                    y = 0;
+                    slope1 *= -1;
+                    flag = false;
+                } else {
+                    y = formLineR(x22, y22, slope1);
+                    dist += reflec(x22, y22, displayW - xE, y);
+                    path.lineTo(displayW - xE, y);
+                    if (y<=0){
+                        drawLineB=false;
+                    }
+                    x22 = (int) displayW - xE;
+                    y22 = y;
+                    y = 0;
+                    slope1 *= -1;
+                    flag = true;
 
+                }
             }
+
         }
         c.drawPath(path, pp);
-
         //c.drawBitmap(ball, cX, cY, null);
 
 
@@ -241,195 +257,25 @@ public class LineC {
     }
 
 
-    private void identify(int index, int pos) {
-        ArrayList<Integer> buffer1 = new ArrayList<>();
-        ArrayList<Integer> buffer2 = new ArrayList<>();
-        ArrayList<Integer> finalList = new ArrayList<>();
-        finalList.add(pos);
-        int step = col_count;
-        int above = pos - step, below = pos + step;
-        Object[] array = new Object[1];
-        int pointsBuffer;
-        //System.out.println("index  " + index + "   position  " + position);
-        //balls.get(position).isBurst = false;
-        // int pos = position;
-        boolean flag = true;
-        array[0] = pos;
-
-
-        while (flag) {
-            for (int i = 0; i < array.length; i++) {
-                pos = (int) array[i];
-                if (pos + 1 < (row_count * col_count) && (pos + 1) % col_count != 0) {//checks at position right to the clicked position
-                    if (balls.get(pos + 1).isBurst && index == balls.get(pos + 1).index) {
-                        buffer1.add(pos + 1);
-                        balls.get(pos + 1).isBurst = true;
-                        //System.out.println("1 at pos   " + (pos + 1));
-
-                    }
-                }
-                if (pos + step < (row_count * col_count)) {//checks at position below the clicked position
-                    if (balls.get(pos + step).isBurst && index == balls.get(pos + step).index) {
-                        buffer1.add(pos + step);
-                        balls.get(pos + step).isBurst = true;
-                        //System.out.println("3 at pos   " + (pos + step));
-                    }
-                }
-                boolean stepb = false;
-                int c12 = 0;
-                for (int q = col_count - 1; q < (row_count * col_count); q += step) {
-                    if (pos - 1 == q) {
-                        c12++;
-                    }
-                }
-                if (c12 > 0) {
-                    stepb = false;
-                } else {
-                    stepb = true;
-                }
-                if (pos - 1 >= 0 && stepb) {//checks at position left to the clicked position
-
-
-                    if (balls.get(pos - 1).isBurst && index == balls.get(pos - 1).index) {
-                        buffer1.add(pos - 1);
-                        balls.get(pos - 1).isBurst = true;
-                        //System.out.println("2 at pos   " + (pos - 1));
-                    }
-                }
-
-
-                if (pos - step >= 0) {//checks at position above the clicked position
-                    if (balls.get(pos - step).isBurst && index == balls.get(pos - step).index) {
-                        buffer1.add(pos - step);
-                        balls.get(pos - step).isBurst = true;
-                        //System.out.println("4 at pos   " + (pos - 8));
-                    }
-                }
-
-                //______________________________for checking right and left of above position_________________________________________________________________________
-                if (above + 1 < (row_count * col_count) && (above + 1) % col_count != 0&&(above+1)>0) {//checks at aboveition right to the clicked aboveition
-                    if (balls.get(above + 1).isBurst && index == balls.get(above + 1).index) {
-                        buffer1.add(above + 1);
-                        balls.get(above + 1).isBurst = true;
-                        //System.out.println("1 at above   " + (above + 1));
-
-                    }
-                }
-
-                stepb = false;
-                c12 = 0;
-                for (int q = col_count - 1; q < (row_count * col_count); q += step) {
-                    if (above - 1 == q) {
-                        c12++;
-                    }
-                }
-                if (c12 > 0) {
-                    stepb = false;
-                } else {
-                    stepb = true;
-                }
-                if (above - 1 >= 0 && stepb) {//checks at aboveition left to the clicked aboveition
-
-
-                    if (balls.get(above - 1).isBurst && index == balls.get(above - 1).index) {
-                        buffer1.add(above - 1);
-                        balls.get(above - 1).isBurst = true;
-                        //System.out.println("2 at above   " + (above - 1));
-                    }
-                }
-                //_________________________________for checking right and left of below position___________________________________________________________________________________________
-                if (below + 1 < (row_count * col_count) && (below + 1) % col_count != 0) {//checks at position right to the clicked position
-                    if (balls.get(below + 1).isBurst && index == balls.get(below + 1).index) {
-                        buffer1.add(below + 1);
-                        balls.get(below + 1).isBurst = true;
-                        //System.out.println("1 at below   " + (below + 1));
-
-                    }
-                }
-
-                stepb = false;
-                c12 = 0;
-                for (int q = col_count - 1; q < (row_count * col_count); q += step) {
-                    if (below - 1 == q) {
-                        c12++;
-                    }
-                }
-                if (c12 > 0) {
-                    stepb = false;
-                } else {
-                    stepb = true;
-                }
-                if (below - 1 >= 0 && stepb) {//checks at belowition left to the clicked belowition
-
-
-                    if (balls.get(below - 1).isBurst && index == balls.get(below - 1).index) {
-                        buffer1.add(below - 1);
-                        balls.get(below - 1).isBurst = true;
-                        //System.out.println("2 at below   " + (below - 1));
-                    }
-                }
-
-
-            }
-
-//           if (buffer1.isEmpty()) {
-//               var++;
-//               if (var == 2) {
-//                   flag = false;
-//               }
-//           }
-            //for adding the unique members of buffer1 to finalList
-            for (int j = 0; j < buffer1.size(); j++) {
-                ////System.out.println("Search path:: for loop 2nd");
-                if (finalList.contains(buffer1.get(j))) {
-                    continue;
-                } else {
-                    buffer2.add(buffer1.get(j));
-                    //System.out.println("added to bfr 2     "+(buffer2.get(j)));
-                }
-            }
-
-
-            if (!buffer2.isEmpty()) {
-                finalList.addAll(buffer2);
-                array = buffer2.toArray();
-                buffer1.clear();
-                buffer2.clear();
-            } else
-                flag = false;
-
-
-
-        }
-        for (int i=0;i<finalList.size();i++){
-            balls.get(finalList.get(i)).isBurst=true;
-        }
-        collision=false;
-
-    }
-
-
-
-
 
     void getnewPoints(float x1,float y1){
        dx1= (float) (x1 + (speed *Math.cos(dire.get(i))));
        dy1= (float) (y1 + (speed * Math.sin(dire.get(i))));
     }
 
-    void ballMove(Canvas c){
+    void ballMove(Canvas c) {
         xb = xbuffer;
         yb = ybuffer;
         //c.drawBitmap(ball,cX-ball.getWidth()/2,cY-ball.getHeight()/2,null);
 
         if (ballflag) {
-            getnewPoints(xb,yb);
-            lx =dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
+            getnewPoints(xb, yb);
+            lx = dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
             ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
             c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
-            shotBall = new RectF(lx, ly, lx +LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
+            shotBall = new RectF(lx, ly, lx + LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
 
-            if ((dx1 -LoadImage.ballImg[ball.index].getWidth() / 2) <= 0) {
+            if ((dx1 - LoadImage.ballImg[ball.index].getWidth() / 2) <= 0) {
                 ballflag = false;
                 i++;
 
@@ -439,10 +285,9 @@ public class LineC {
             yb = dy1;
             xb = dx1;
 
-        }
-        else{
-            getnewPoints(xb,yb);
-            lx =dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
+        } else {
+            getnewPoints(xb, yb);
+            lx = dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
             ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
             c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
             shotBall = new RectF(lx, ly, lx + LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
@@ -472,31 +317,158 @@ public class LineC {
 //                //return;
 //            }
         }
-        for (int i=0;i<balls.size();i++){
-            if(intersects(balls.get(i).rec,shotBall)){
-                if (balls.get(i).index==ball.index)
-                    circle.check_col(balls.get(i).rec,shotBall);
-                //System.out.println("intersection");
 
-                break;
+
+
+        boolean interse=false;
+        int k1=0;
+        for (int k=0;k<balls.size();k++) {
+            if (balls.get(k).isVisible&&intersects(balls.get(k).rec, shotBall)) {
+                interse = check_col(balls.get(k).rec, shotBall);
+                k1=k;
             }
         }
-        if (collision){
-            identify(balls.get(i).index,i);
-            endshoot=true;
-            // ApplicationView.shoot = false;
-            collision=false;
+        if (interse){
+            if (balls.get(k1).index==ball.index){
+                identify(ball.index,k1);
+                endshoot=true;
+            }
+            else if (balls.get(k1).index==10){  //bubble
+                balls.get(k1).isVisible=false;
+                balls.get(k1).isAvailable=false;
+            }
+            else if (balls.get(k1).index==62){  //brick
 
-            //return;
+            }
+            else if (balls.get(k1).index==32){  //bird
+
+            }
+            else{
+                if (k1<((row_count-1)*col_count)-1) {
+                    for (int i = k1+1; i < balls.size(); i++) {
+                        if (intersects(balls.get(i).rec, shotBall)) {
+                            balls.get(i).index = ball.index;
+                            balls.get(i).isAvailable = true;
+                            balls.get(i).isVisible = true;
+                            endshoot=true;
+                            break;
+                        }
+
+                    }
+                }
+                if (k1>((row_count-1)*col_count)) {
+                    balls.add(new Ball(lx,ly,ball.index,true,i+col_count));
+                    endshoot=true;
+                }
+            }
         }
-        if (y > -1 && y <= displayH) {
-            ApplicationView.shoot = false;
-        }
+
     }
-    void check_colisiion(RectF r1, RectF r2){
-        for (int i=0;i<balls.size()-1;i++){
+
+
+
+
+
+    boolean check_col(RectF r1, RectF r2){
+        float radius;
+        boolean a =false;
+        float centerX,centerY,centerX1,centerY1;
+        radius=LoadImage.ballImg[3].getWidth()/2;
+        radius*=2.5;
+        centerX=r1.centerX();
+        centerY=r1.centerY();
+        centerX1=r2.centerX();
+        centerY1=r2.centerY();
+        double distance = Math.sqrt(Math.pow((centerX1 - centerX), 2) + Math.pow((centerY1 - centerY), 2));
+        distance= Float.parseFloat(new DecimalFormat("##.##").format(distance));
+        if (distance>(radius)){
+            a= false;
+        }
+        if (distance<=(radius)) {
+            a= true;
+        }
+        return a;
+
+    }
+    void identify(int index, int p) {
+        ArrayList<Integer> b1 = new ArrayList<>();
+        ArrayList<Integer> b2 = new ArrayList<>();
+        ArrayList<Integer> finalList = new ArrayList<>();
+       // finalList.add(p);
+        //int above=0,below=0;
+        // boolean aflag=false,bflag=false,flag = false,right,left,aright,aleft,bright,bleft;
+        Object[] array = new Object[1];
+        array[0] = p;
+        int pos1;
+        RectF rec1 = new RectF();
+        aflag=true;
+
+        while (aflag) {
+
+            for (int i = 0; i < array.length; i++) {
+                pos1 = (int) array[i];
+                rec1.set(balls.get(pos1).rec);
+                // setBoolean(pos1);
+                for (int j = 0; j < balls.size(); j++) {
+//                    if (j == p) {
+//                        continue;
+//                    }
+                    //intersects(rec, balls.get(j).rec)
+                    //if (balls.get(j).isAvailable&&balls.get(j).index==index&&balls.get(j).rec.intersects(rec1.left,rec1.top,rec1.right,rec1.bottom)) {
+                    if (balls.get(j).isAvailable&&balls.get(j).index==index&&intersects(balls.get(j).rec,rec1)) {
+                        b1.add(j);
+                    }
+                }
+
+                rec1.setEmpty();
+            }
+
+            for (int i = 0; i < b1.size(); i++) {
+                if (finalList.contains(b1.get(i))) {
+                    continue;
+                }
+                if (balls.get(b1.get(i)).isAvailable) {
+                    if (index == balls.get(b1.get(i)).index) {
+                        b2.add(b1.get(i));
+                        balls.get(b1.get(i)).isAvailable = false;
+                    }
+                }
+            }
+
+
+            if (!b2.isEmpty()) {
+                finalList.addAll(b2);
+                array = b2.toArray();
+                b1.clear();
+                b2.clear();
+            } else {
+                aflag = false;
+            }
 
         }
+
+        for (int i = 0; i < finalList.size(); i++) {
+            balls.get(finalList.get(i)).isVisible=false;
+        }
+
     }
+
+void getshootingball(){
+    ArrayList<Integer> ballarray=new ArrayList<>();
+    for (int j = balls.size(); j >= 0; j--) {
+        if (balls.get(j).y<0){
+            break;
+        }
+         if (balls.get(j).isVisible){
+             if (!ballarray.contains(balls.get(j).index)){
+                 ballarray.add(balls.get(j).index);
+             }
+         }
+
+    }
+}
+
+
+
 
 }

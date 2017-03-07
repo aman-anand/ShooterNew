@@ -26,6 +26,7 @@ import static com.tangiapps.shooternew.LineC.dy1;
 import static com.tangiapps.shooternew.LineC.xb;
 import static com.tangiapps.shooternew.LineC.yb;
 import static com.tangiapps.shooternew.LoadImage.ballImg;
+import static com.tangiapps.shooternew.LoadImage.load;
 
 public class ApplicationView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -34,7 +35,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             x_cor = 0, y_cor = 0;
     public static boolean isTouchEnable = true,boooooo=true;
     static Context contxt;
-    static int levelno = 1, row_count = 11, col_count = 13;
+    static int levelno = 1, row_count = 11, col_count = 14;
     float downX = 0, downY = 0,
             upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
             dY = 0;
@@ -56,7 +57,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
     BackButtonPress backButtonPress = new BackButtonPress();
     DrawString drawString = new DrawString();
-    RectF reset, pause;
+    RectF reset, pause,topBbar;
     ;
     int row = -1, col = -1, delay1 = 0, a = 20;
 //    int delayCounter = 0, framecount = 0, framecount1 = 0, framecount2 = 0, birdIndex = 0, totalframe = 6;
@@ -69,6 +70,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     ;
     ArrayList<Ball> ballArrayList = new ArrayList<>();
     ArrayList<Ball> bubble = new ArrayList<>();
+    Ball [][] abc=new Ball[row_count][col_count];
 //    Rotate rotate = new Rotate();
 //    Bitmap bitmap;
 // double slope;
@@ -86,7 +88,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     Point[] points = new Point[2];
     static ArrayList<Ball> balls = new ArrayList<>(400);
     ArrayList<Ball> bubbles = new ArrayList<>();
-    int[][] gameMatrix = new int[11][13];
+    int[][] gameMatrix = new int[11][14];
     private float xl, yl;
     //BallPath ballPath = new BallPath();
 
@@ -119,10 +121,11 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         pp.setTextSize(32);
         pp.setStrokeWidth(5);
         pp.setStyle(STROKE);
-        pq.setColor(getResources().getColor(R.color.black));
+        pq.setColor(getResources().getColor(R.color.paincolor));
         pq.setTextSize(32);
         pq.setStrokeWidth(15);
         pq.setStyle(FILL_AND_STROKE);
+        topBbar=new RectF(0,0,LoadImage.topbar.getWidth(),LoadImage.topbar.getHeight());
     }
 
     private void sound_initialization() {
@@ -208,32 +211,40 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     public void gamePlay(Canvas c) {
-
+        if (balls.get(balls.size()-1).y>displayH*.6f){
+            levelanim();
+        }
+        if (balls.get(balls.size()-1).y<displayH*.6f){
+            levelanim1();
+        }
 
         c.drawBitmap(LoadImage.levelpage, 0, 0, null);
+        c.drawBitmap(LoadImage.topbar,0,0,null);
 
+        //c.drawBitmap(LoadImage.pause, ApplicationView.displayW * .97f - LoadImage.pause.getWidth(), ApplicationView.displayH * .1f, AppActivity.cls);
 
-        c.drawBitmap(LoadImage.pause, ApplicationView.displayW * .97f - LoadImage.pause.getWidth(), ApplicationView.displayH * .1f, AppActivity.cls);
-        c.drawBitmap(LoadImage.shooter, ApplicationView.displayW * .5f - LoadImage.shooter.getWidth(), ApplicationView.displayH * .8f, pp);
 
 //        bitmap=getO(LoadImage.shooter, (float) angle);
 //        c.drawBitmap(bitmap,ApplicationView.displayW*.5f-LoadImage.shooter.getWidth(),ApplicationView.displayH*.8f,AppActivity.cls);
+
+
         for (int i = 0; i < balls.size(); i++) {
+
             if (balls.get(i).isAvailable) {
-                if (balls.get(i).isVisible && !balls.get(i).isBurst) {
+                if (balls.get(i).isVisible ) {
                     //c.drawRect(balls.get(i).rec, paint);
                     //c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
-                    c.drawRect(balls.get(i).rec,pq);
+                   // c.drawRect(balls.get(i).rec,pq);
                     c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+
+
                 }
             }
-            if (boooooo) {
-                //System.out.println("balls.get(balls.get(" + i + ").pos) =  " + i);
-            }
+
         }
-        boooooo=false;
+        c.drawBitmap(LoadImage.shooter, ApplicationView.displayW * .5f - LoadImage.shooter.getWidth(), ApplicationView.displayH * .8f, pp);
         c.drawBitmap(LoadImage.box, ApplicationView.displayW * .3f - LoadImage.box.getWidth(), ApplicationView.displayH * .85f, null);
-        c.drawBitmap(LoadImage.ballImg[3], cX, cY, null);
+        c.drawBitmap(LoadImage.ballImg[3], cX-LoadImage.ballImg[3].getWidth()/2, cY, null);
         if (aBoolean) {
 
             lp2.lineDraw(c);
@@ -245,22 +256,13 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             if (LineC.endshoot)
             shoot = false;
 
-//            xb=cX;
-//            yb=cY;
-
-            //isTouchEnable=false;
         }
         if (shoot) {
             lp2.ballMove(c);
             xbuffer = dx1;
             ybuffer = dy1;
-            //lp2.balldraw(c);
+
         }
-        //if (shootball){
-
-        //}
-
-        // c.drawBitmap(LoadImage.ballImg[],ApplicationView.displayW*.3f-LoadImage.box.getWidth(),ApplicationView.displayH*.85f,null);
 
         if (islevelCleared == false) {
 
@@ -312,6 +314,34 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
         /// Score bonus
 
+    }
+
+    private void levelanim1() {
+        for (int i = 0; i < balls.size(); i++) {
+
+            // c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+//            if (balls.get(i).y==displayH*.75f){
+//                for ()
+//            }
+//
+            balls.get(i).y+=10;
+            balls.get(i).rec=new RectF(balls.get(i).x,balls.get(i).y,balls.get(i).x+LoadImage.ballImg[0].getWidth(),LoadImage.ballImg[0].getHeight()+balls.get(i).y);
+
+        }
+    }
+
+    private void levelanim() {
+        for (int i = 0; i < balls.size(); i++) {
+
+           // c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+//            if (balls.get(i).y==displayH*.75f){
+//                for ()
+//            }
+//
+            balls.get(i).y-=10;
+            balls.get(i).rec=new RectF(balls.get(i).x,balls.get(i).y,balls.get(i).x+LoadImage.ballImg[0].getWidth(),LoadImage.ballImg[0].getHeight()+balls.get(i).y);
+
+        }
     }
 
     @Override
@@ -554,15 +584,15 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
     //__________________________________________________________________My methods_________________________________________________
     void initshooter() {
-        float x = (float) (ApplicationView.displayW * .5f - LoadImage.shooter.getWidth());
-        float y = (float) (ApplicationView.displayH * .8f);
+        float x = (float) (ApplicationView.displayW * .5f - LoadImage.shooter.getWidth()/2);
+        float y = (float) (ApplicationView.displayH * .9f);
         //System.out.println(x+"  "+y);
         rec_shooter = new RectF(x, y, x + LoadImage.shooter.getWidth(), y + LoadImage.shooter.getHeight());
 
-        cX = x + LoadImage.shooter.getWidth();
-        cX -= 36;
-        cY = y + LoadImage.shooter.getHeight();
-        cY -= 18;
+        cX = x ;
+        //cX -= 36;
+        cY = y ;
+       // cY -= 18;
         xe1 = cX;
         ye1 = cY;
         xbuffer = cX;
@@ -591,33 +621,47 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
     }
 
-    void Create() {
+    void  Create() {
         //if (balls.size() < (row_count * col_count)) {
 
 //        if (isUpdate || islevelCleared) {
 //           balls.clear();
 //        }
-        x = (float) (displayW - (col_count * ballImg[0].getWidth()))/10 ;
-        y = (float) (displayH - (row_count * ballImg[0].getHeight()))/12 ;
+//        row_count=;
+//        col_count=;
+        y=LoadImage.topbar.getHeight();
+        //y=displayH*.75f;
+        x= (float) (displayW - (col_count * ballImg[0].getWidth()))/10 ;
+        //y+= (float) (displayH - (row_count * ballImg[0].getHeight()))/12 ;
         xl = ballImg[0].getWidth();
-        yl = ballImg[0].getHeight();
+        yl = ballImg[0].getHeight()*.9f;
+        //y=y+yl;
+        x=x+xl;
         int p=0;
         for (int i = 0; i < row_count; i++) {
+            if (i%2!=0&&i>0){
+                x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 1.5f;
+
+            }
+            else{
+                x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 10;
+            }
             for (int j = 0; j < col_count; j++) {
 
-                balls.add(new Ball(x, y, gameMatrix[i][j], true));
+                balls.add(new Ball(x, y, gameMatrix[i][j], true,p));
+
 
                 x = (float) (x + xl);
                 p++;
             }
-            x = (float) (displayW - (col_count * ballImg[0].getWidth())) / 10;
+
 
             y = (float) (y + yl);
 
         }
         System.out.println("balls.size  " + balls.size());
 
-        balls.add(new Ball(158,572+yl,2,true));
+       // balls.add(new Ball(158,572+yl,2,true,p));
         System.out.println("balls.size  " + balls.size());
 
 

@@ -21,16 +21,16 @@ public class Ball {
     float disH= (float) ApplicationView.displayH;
     float disW= (float) ApplicationView.displayW;
 
-    Ball(double x1, double y1, int index1, boolean a){
+    Ball(double x1, double y1, int index1, boolean a,int p){
         x= (float) x1;
         y= (float) y1;
         index=index1;
         isVisible=a;
         isBurst=false;
         isAvailable=a;
-
+        pos=p;
         //For rectangle
-        rec=new RectF(x+6,y+6, x+ ballImg[index].getWidth()-6,y+ ballImg[index].getHeight()-6);
+        rec=new RectF(x-2,y-2, x+ ballImg[index].getWidth()+2,y+ ballImg[index].getHeight()+2);
 
     }
     Ball(float x1,float y1, boolean a){

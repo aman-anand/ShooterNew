@@ -41,14 +41,14 @@ public class DrawString {
 				(int) ((ApplicationView.displayW * (.2)) - ((lp
 						.measureText(ApplicationView.contxt.getString(R.string.Level)
 								+ ": " + ApplicationView.levelno)) * (0.50))),
-				(float) (ApplicationView.displayH * .14), lp);
+				(float) (ApplicationView.displayH * .08), lp);
 
 		c.drawText(ApplicationView.contxt.getString(R.string.Level) + ": "
 				+ ApplicationView.levelno,
 				(int) ((ApplicationView.displayW * (.2)) - ((wslp
 						.measureText(ApplicationView.contxt.getString(R.string.Level)
 								+ ": " + ApplicationView.levelno)) * (0.50))),
-				(float) (ApplicationView.displayH * .14), wslp);
+				(float) (ApplicationView.displayH * .08), wslp);
 
 		
 //		c.drawText(ApplicationView.contxt.getString(R.string.moves) + ": "
