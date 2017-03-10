@@ -13,24 +13,25 @@ import static com.tangiapps.shooternew.LoadImage.bubble;
 public class Ball {
     float x,y,x1,y1;
     int index;
-    int pos;
-    boolean isVisible,isBurst;
+    int pos,rowNo;
+    boolean isVisible,isBurst,isLinked;
     boolean isAvailable;
     boolean isClick;
     RectF rec=new RectF();
     float disH= (float) ApplicationView.displayH;
     float disW= (float) ApplicationView.displayW;
 
-    Ball(double x1, double y1, int index1, boolean a,int p){
+    Ball(double x1, double y1, int index1, boolean a,int p,int k){
         x= (float) x1;
         y= (float) y1;
         index=index1;
         isVisible=a;
         isBurst=false;
         isAvailable=a;
+        rowNo=k;
         pos=p;
         //For rectangle
-        rec=new RectF(x-2,y-2, x+ ballImg[index].getWidth()+2,y+ ballImg[index].getHeight()+2);
+        rec=new RectF(x-36,y-36, x+ ballImg[index].getWidth()+36,y+ ballImg[index].getHeight()+36);
 
     }
     Ball(float x1,float y1, boolean a){

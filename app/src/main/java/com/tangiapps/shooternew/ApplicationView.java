@@ -35,39 +35,41 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             x_cor = 0, y_cor = 0;
     public static boolean isTouchEnable = true,boooooo=true;
     static Context contxt;
-    static int levelno = 1, row_count = 11, col_count = 14;
-    float downX = 0, downY = 0,
-            upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
-            dY = 0;
+    static int levelno = 1, row_count = 11, col_count = 14,lastVisible=0;
     static boolean isBackgroundTouch = false, isResetButton = false, isGoToNextLevel = false, isQuitPage = false, isSettingPage = false,
             isBackButtonPress = false, isMianPage = false, isResetAppLevel = false, isPlayingMode = false, isLevelPage = false,
             islevelCleared = false, isLevelFailed = false, isNextBtnPressed = false, isSoundOn = true,
             isMenuBtnPressed = false, isRetryBtnPressed = false, isOptionPage = false, isUpdate = true, isGameOn = false;
+    static boolean aBoolean, shootball = false, shoot = false;
+    static float cX = 0, x, y;
+    static float cY = 0, xbuffer, ybuffer;
+    static Paint pp = new Paint();
+    static ArrayList<Ball> balls = new ArrayList<>(400);
+    float downX = 0, downY = 0,
+            upX = 0, upY = 0, count = 0, i = 0, j = 0, dX = 0, uX = 0, uY = 0,
+            dY = 0;
     AppThread thread = new AppThread();
     LoadImage loadImage = new LoadImage();
     LevelCleared levelClear = new LevelCleared();
     LevelFailed levelfailed = new LevelFailed();
     AppMatrix appMatrix = new AppMatrix();
+    //RectF boardRect;
     MainPage mainPage = new MainPage();
     AppLevelPage appLevelPage = new AppLevelPage();
     QuitePage quitPage = new QuitePage();
+    ;
     SettingPage settingPage = new SettingPage();
     Options op = new Options();
-    //RectF boardRect;
-
     BackButtonPress backButtonPress = new BackButtonPress();
     DrawString drawString = new DrawString();
-    RectF reset, pause,topBbar;
     ;
+    RectF reset, pause,topBbar;
     int row = -1, col = -1, delay1 = 0, a = 20;
 //    int delayCounter = 0, framecount = 0, framecount1 = 0, framecount2 = 0, birdIndex = 0, totalframe = 6;
 //    //__________________________________________________________________My variables_________________________________________________
 //    static int anInt;
 //    float bux, buy;
     Paint pq = new Paint();
-    private int dy;
-    static boolean aBoolean, shootball = false, shoot = false;
-    ;
     ArrayList<Ball> ballArrayList = new ArrayList<>();
     ArrayList<Ball> bubble = new ArrayList<>();
     Ball [][] abc=new Ball[row_count][col_count];
@@ -77,18 +79,14 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 //    Point p1;
 //    Point p2;
     RectF rec_shooter;
-    static float cX = 0, x, y;
-    static float cY = 0, xbuffer, ybuffer;
-
     float xEnd, yEnd, xe1, ye1;
     double angle, y22;
-    static Paint pp = new Paint();
     float intercept;
     LineC lp2;
     Point[] points = new Point[2];
-    static ArrayList<Ball> balls = new ArrayList<>(400);
     ArrayList<Ball> bubbles = new ArrayList<>();
     int[][] gameMatrix = new int[11][14];
+    private int dy;
     private float xl, yl;
     //BallPath ballPath = new BallPath();
 
@@ -211,11 +209,21 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
     }
 
     public void gamePlay(Canvas c) {
-        if (balls.get(balls.size()-1).y>displayH*.6f){
-            levelanim();
+        for (int k = balls.size()-1; k >-1;k--) {
+            if (balls.get(k).isVisible){
+                lastVisible=k;
+                break;
+            }
+
         }
-        if (balls.get(balls.size()-1).y<displayH*.6f){
+        if (balls.get(lastVisible).y>displayH*.6f){
+            levelanim();
+
+
+        }
+        if (balls.get(lastVisible).y<displayH*.6f){
             levelanim1();
+
         }
 
         c.drawBitmap(LoadImage.levelpage, 0, 0, null);
@@ -234,9 +242,9 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
                 if (balls.get(i).isVisible ) {
                     //c.drawRect(balls.get(i).rec, paint);
                     //c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
-                   // c.drawRect(balls.get(i).rec,pq);
-                    c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
 
+                    c.drawBitmap(LoadImage.ballImg[balls.get(i).index], balls.get(i).x, balls.get(i).y, null);
+                    c.drawRect(balls.get(i).rec,pp);
 
                 }
             }
@@ -244,7 +252,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         }
         c.drawBitmap(LoadImage.shooter, ApplicationView.displayW * .5f - LoadImage.shooter.getWidth(), ApplicationView.displayH * .8f, pp);
         c.drawBitmap(LoadImage.box, ApplicationView.displayW * .3f - LoadImage.box.getWidth(), ApplicationView.displayH * .85f, null);
-        c.drawBitmap(LoadImage.ballImg[3], cX-LoadImage.ballImg[3].getWidth()/2, cY, null);
+       // c.drawBitmap(LoadImage.ballImg[3], cX-LoadImage.ballImg[3].getWidth()/2, cY, null);
         if (aBoolean) {
 
             lp2.lineDraw(c);
@@ -255,6 +263,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             shoot=true;
             if (LineC.endshoot)
             shoot = false;
+            isTouchEnable=true;
 
         }
         if (shoot) {
@@ -637,6 +646,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
         yl = ballImg[0].getHeight()*.9f;
         //y=y+yl;
         x=x+xl;
+        int rowNumber=0;
         int p=0;
         for (int i = 0; i < row_count; i++) {
             if (i%2!=0&&i>0){
@@ -648,7 +658,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
             }
             for (int j = 0; j < col_count; j++) {
 
-                balls.add(new Ball(x, y, gameMatrix[i][j], true,p));
+                balls.add(new Ball(x, y, gameMatrix[i][j], true,p,rowNumber));
 
 
                 x = (float) (x + xl);
@@ -657,6 +667,7 @@ public class ApplicationView extends SurfaceView implements SurfaceHolder.Callba
 
 
             y = (float) (y + yl);
+            rowNumber++;
 
         }
         System.out.println("balls.size  " + balls.size());

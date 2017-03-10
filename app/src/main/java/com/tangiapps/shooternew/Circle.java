@@ -7,6 +7,10 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RoundRectShape;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+
+import static android.graphics.RectF.intersects;
+import static com.tangiapps.shooternew.ApplicationView.balls;
 
 /**
  * Created by aMaN on 2/18/2017.
@@ -99,6 +103,137 @@ RectF ball1,ball2;
 
 
 
+    void identify(int index, int p) {
+        ArrayList<Integer> b1 = new ArrayList<>();
+        ArrayList<Integer> b2 = new ArrayList<>();
+        ArrayList<Integer> finalList = new ArrayList<>();
+        // finalList.add(p);
+        //int above=0,below=0;
+        // boolean aflag=false,bflag=false,flag = false,right,left,aright,aleft,bright,bleft;
+        Object[] array = new Object[1];
+        array[0] = p;
+        int pos1;
+        RectF rec1 = new RectF();
+        boolean aflag=true;
+        int count=0;
+        while (aflag) {
+
+            for (int i = 0; i < array.length; i++) {
+                pos1 = (int) array[i];
+                rec1.set(balls.get(pos1).rec);
+                // setBoolean(pos1);
+                count=0;
+                for (int j = 0; j < balls.size(); j++) {
+
+                    if (balls.get(j).isAvailable&&balls.get(j).index==index&&intersects(balls.get(j).rec,rec1)) {
+                        b1.add(j);
+                        count++;
+                    }
+                }
+                //if (count==)
+                rec1.setEmpty();
+            }
+
+            for (int i = 0; i < b1.size(); i++) {
+                if (finalList.contains(b1.get(i))) {
+                    continue;
+                }
+                if (balls.get(b1.get(i)).isAvailable) {
+                    if (index == balls.get(b1.get(i)).index) {
+                        b2.add(b1.get(i));
+                        balls.get(b1.get(i)).isAvailable = false;
+                    }
+                }
+            }
 
 
-}
+            if (!b2.isEmpty()) {
+                finalList.addAll(b2);
+                array = b2.toArray();
+                b1.clear();
+                b2.clear();
+            } else {
+                aflag = false;
+            }
+
+        }
+
+        for (int i = 0; i < finalList.size(); i++) {
+            balls.get(finalList.get(i)).isVisible=false;
+        }
+
+    }
+
+void dest(){
+
+    for (int i1=balls.size()-1;i1>-1;i1--){
+        ArrayList<Integer> b1 = new ArrayList<>();
+        ArrayList<Integer> b2 = new ArrayList<>();
+        ArrayList<Integer> finalList = new ArrayList<>();
+        ArrayList<Integer> covered = new ArrayList<>();
+        ArrayList<Integer> bared = new ArrayList<>();
+
+        // finalList.add(p);
+        //int above=0,below=0;
+        // boolean aflag=false,bflag=false,flag = false,right,left,aright,aleft,bright,bleft;
+        Object[] array = new Object[1];
+        array[0] = i1;
+        int pos1;
+        RectF rec1 = new RectF();
+        boolean aflag=true;
+int count=0;
+
+        while (aflag) {
+
+            for (int i = 0; i < array.length; i++) {
+                pos1 = (int) array[i];
+                rec1.set(balls.get(pos1).rec);
+                count=0;
+                for (int j = 0; j < balls.size(); j++) {
+                    if (balls.get(j).isVisible&&intersects(balls.get(j).rec,rec1)) {
+                        b1.add(j);
+                        count++;
+                    }
+                }
+                if (count==6){
+                    covered.add(pos1);
+                }
+                rec1.setEmpty();
+            }
+
+            for (int i = 0; i < b1.size(); i++) {
+                if (finalList.contains(b1.get(i))) {
+                    continue;
+                }
+                //if (balls.get(b1.get(i)).rowNo>) {
+                   // if (index == balls.get(b1.get(i)).index) {
+                        b2.add(b1.get(i));
+                        balls.get(b1.get(i)).isAvailable = false;
+                    }
+                //}
+            }
+
+
+            if (!b2.isEmpty()) {
+                finalList.addAll(b2);
+                array = b2.toArray();
+                b1.clear();
+                b2.clear();
+            } else {
+                aflag = false;
+            }
+
+        }
+
+//        for (int i = 0; i < finalList.size(); i++) {
+//            balls.get(finalList.get(i)).isVisible=false;
+//        }
+
+    }
+} 
+
+
+
+
+
+

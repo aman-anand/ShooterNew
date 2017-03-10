@@ -11,6 +11,7 @@ import android.graphics.RectF;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 import static android.graphics.RectF.intersects;
 import static com.tangiapps.shooternew.ApplicationView.cX;
@@ -37,27 +38,27 @@ public class LineC {
 
    static float dx1, dy1, x, y;
     static double angle, slope;
-
+    static   ArrayList<Integer> ballarray=new ArrayList<>();
+    static double slope2, dist;
+    static boolean ballflag;
+    //private BallPath ballPath;
+    static Ball ball;
+    //ArrayList<Double> direction= new ArrayList<>();
+    static float xb, yb;
+    static int ballindex=0;
+    static boolean collision,endshoot,drawLineB,newsetter=true,uuuuuuu=true;
     //Point p[] = new Point[2];
     Path path = new Path();
     float x22, y22;
     double slope1;
-    static double slope2, dist;
-    static boolean ballflag;
-    private float lx, ly;
-    //private BallPath ballPath;
-    Ball ball;
     //Bitmap ball1 = LoadImage.ballImg[5];
     ArrayList<Double> dire= new ArrayList<>();
-    //ArrayList<Double> direction= new ArrayList<>();
-    static float xb, yb;
     RectF shotBall;
-    static boolean collision,endshoot,drawLineB,newsetter=false;
     double speed = 8;
     float xE = (float) (displayW * 0.0375);
     int i=0;
-    int above=0,below=0;
     boolean aflag=false,flag = false;
+    private float lx, ly;
 
 
     LineC() {
@@ -65,12 +66,65 @@ public class LineC {
         xb = cX;
         xE = (float) (displayW * 0.04166);
         yb = cY;
+        setshootingball();
+
     }
+
+    static float distanceCalc(PointF p1, PointF p2) {
+
+        dist = Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
+        return Float.parseFloat(new DecimalFormat("##.##").format(dist));
+
+    }
+
+static void setshootingball(){
+    ballarray.clear();
+    for (int j = balls.size()-1; j >= 0; j--) {
+        if (balls.get(j).y<0){
+            break;
+        }
+         if (balls.get(j).isVisible){
+             if (!ballarray.contains(balls.get(j).index)){
+                 ballarray.add(balls.get(j).index);
+             }
+         }
+
+    }
+
+
+}
+
+static int getshootingball(){
+if (uuuuuuu){
+    setshootingball();
+    uuuuuuu=false;
+}
+//    ArrayList<Integer> listc ;
+//    listc.clone(ballarray);
+    boolean flag = true;
+    int n = 0;
+    if (newsetter) {
+       newsetter=false;
+        Random r = new Random();
+        while (flag) {
+            n = r.nextInt(ballarray.size());
+            if (ballarray.contains(n)) {
+               ballindex=n;
+                break;
+            }
+
+        }
+    }
+        return ballindex;
+
+}
 
     //__________________________________Methods_______________________________________________________
     void angleC(float dwnX, float dwnY) {
         drawLineB=false;
-        ball = new Ball( 0,  0, 3,true,0);
+      ball = new Ball( 0,  0, getshootingball(),true,0,0);
+        //        ball = new Ball( 0,  0, getshootingball(),true,0);
+        //        ball = new Ball( 0,  0, 3,true,0);
         endshoot=false;
         collision=false;
         dire.clear();
@@ -85,6 +139,10 @@ public class LineC {
 
         angle = Math.toDegrees(Math.atan2(yDiff, xDiff));
         if (angle>25&&angle<160){
+            System.out.println("angle = " + angle);
+            if (angle>89&&angle<91){
+                angle=89;
+            }
             drawLineB=true;
         }
 //        System.out.println("angle = " + angle);
@@ -106,61 +164,6 @@ public class LineC {
         slope2 = slope;
 //        System.out.println("slope = " + slope);
         path.moveTo(cX, cY);
-
-    }
-
-    //__________________________________________________________________________________
-    private float formLineL(float xStsart, float yStart, double slope) {
-        // flag=false;
-        float y11 = (int) ((slope * (xE - xStsart)) + yStart);
-        dire.add(Math.atan2((y11-yStart),(xE-xStsart)));
-        return y11;
-    }
-
-    private float formLineR(float xStsart, float yStart, double slope) {
-        // flag=true;
-        float y11 = (int) ((slope * ((displayW - xE) - xStsart)) + yStart);
-        dire.add(Math.atan2((y11-yStart),((displayW - xE)-xStsart)));
-        return y11;
-    }
-
-    public void lineDraw(Canvas c) {
-
-        if (drawLineB) {
-            dist = 0;
-            while (y22 > -1 && y22 <= displayH) {
-                if (flag) {
-                    y = formLineL(x22, y22, slope1);
-                    dist += reflec(x22, y22, xE, y);
-                    path.lineTo(xE, y);
-                    if (y<=0){
-                        drawLineB=false;
-                    }
-                    x22 = xE;
-                    y22 = y;
-                    y = 0;
-                    slope1 *= -1;
-                    flag = false;
-                } else {
-                    y = formLineR(x22, y22, slope1);
-                    dist += reflec(x22, y22, displayW - xE, y);
-                    path.lineTo(displayW - xE, y);
-                    if (y<=0){
-                        drawLineB=false;
-                    }
-                    x22 = (int) displayW - xE;
-                    y22 = y;
-                    y = 0;
-                    slope1 *= -1;
-                    flag = true;
-
-                }
-            }
-
-        }
-        c.drawPath(path, pp);
-        //c.drawBitmap(ball, cX, cY, null);
-
 
     }
 
@@ -231,11 +234,58 @@ public class LineC {
 //        return y11;
 //    }
 
+    //__________________________________________________________________________________
+    private float formLineL(float xStsart, float yStart, double slope) {
+        // flag=false;
+        float y11 = (int) ((slope * (xE - xStsart)) + yStart);
+        dire.add(Math.atan2((y11-yStart),(xE-xStsart)));
+        return y11;
+    }
 
-    static float distanceCalc(PointF p1, PointF p2) {
+    private float formLineR(float xStsart, float yStart, double slope) {
+        // flag=true;
+        float y11 = (int) ((slope * ((displayW - xE) - xStsart)) + yStart);
+        dire.add(Math.atan2((y11-yStart),((displayW - xE)-xStsart)));
+        return y11;
+    }
 
-        dist = Math.sqrt(Math.pow((p2.x - p1.x), 2) + Math.pow((p2.y - p1.y), 2));
-        return Float.parseFloat(new DecimalFormat("##.##").format(dist));
+    public void lineDraw(Canvas c) {
+        c.drawBitmap(LoadImage.ballImg[ball.index], cX-LoadImage.ballImg[3].getWidth()/2, cY, null);
+        if (drawLineB) {
+            dist = 0;
+            while (y22 > -1 && y22 <= displayH) {
+                if (flag) {
+                    y = formLineL(x22, y22, slope1);
+                    dist += reflec(x22, y22, xE, y);
+                    path.lineTo(xE, y);
+                    if (y<=0){
+                        drawLineB=false;
+                    }
+                    x22 = xE;
+                    y22 = y;
+                    y = 0;
+                    slope1 *= -1;
+                    flag = false;
+                } else {
+                    y = formLineR(x22, y22, slope1);
+                    dist += reflec(x22, y22, displayW - xE, y);
+                    path.lineTo(displayW - xE, y);
+                    if (y<=0){
+                        drawLineB=false;
+                    }
+                    x22 = (int) displayW - xE;
+                    y22 = y;
+                    y = 0;
+                    slope1 *= -1;
+                    flag = true;
+
+                }
+            }
+
+        }
+        c.drawPath(path, pp);
+        //c.drawBitmap(ball, cX, cY, null);
+
 
     }
 
@@ -256,14 +306,13 @@ public class LineC {
 
     }
 
-
-
     void getnewPoints(float x1,float y1){
        dx1= (float) (x1 + (speed *Math.cos(dire.get(i))));
        dy1= (float) (y1 + (speed * Math.sin(dire.get(i))));
     }
 
     void ballMove(Canvas c) {
+        ApplicationView.isTouchEnable=false;
         xb = xbuffer;
         yb = ybuffer;
         //c.drawBitmap(ball,cX-ball.getWidth()/2,cY-ball.getHeight()/2,null);
@@ -274,7 +323,7 @@ public class LineC {
             ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
             c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
             shotBall = new RectF(lx, ly, lx + LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
-
+            c.drawRect(shotBall,pp);
             if ((dx1 - LoadImage.ballImg[ball.index].getWidth() / 2) <= 0) {
                 ballflag = false;
                 i++;
@@ -289,9 +338,10 @@ public class LineC {
             getnewPoints(xb, yb);
             lx = dx1 - LoadImage.ballImg[ball.index].getWidth() / 2;
             ly = dy1 - LoadImage.ballImg[ball.index].getHeight() / 2;
+
             c.drawBitmap(LoadImage.ballImg[ball.index], lx, ly, null);
             shotBall = new RectF(lx, ly, lx + LoadImage.ballImg[ball.index].getWidth(), ly + LoadImage.ballImg[ball.index].getHeight());
-
+            c.drawRect(shotBall,pp);
 
             if ((dx1 + LoadImage.ballImg[ball.index].getWidth() / 2) >= displayW) {
                 ballflag = true;
@@ -331,9 +381,10 @@ public class LineC {
         if (interse){
             if (balls.get(k1).index==ball.index){
                 identify(ball.index,k1);
+                newsetter=true;
                 endshoot=true;
-            }
-            else if (balls.get(k1).index==10){  //bubble
+
+            } else if (balls.get(k1).index==10){  //bubble
                 balls.get(k1).isVisible=false;
                 balls.get(k1).isAvailable=false;
             }
@@ -350,24 +401,29 @@ public class LineC {
                             balls.get(i).index = ball.index;
                             balls.get(i).isAvailable = true;
                             balls.get(i).isVisible = true;
+                            newsetter=true;
                             endshoot=true;
                             break;
                         }
 
                     }
-                }
-                if (k1>((row_count-1)*col_count)) {
-                    balls.add(new Ball(lx,ly,ball.index,true,i+col_count));
+                } else if (k1>((row_count-1)*col_count)&&balls.get(k1).index!=ball.index) {
+                    balls.add(new Ball(lx,ly,ball.index,true,i+col_count,(balls.get(k1).rowNo+1)));
+                    newsetter=true;
                     endshoot=true;
                 }
             }
+            //_______________________________________code for ball falling goes here
+
+
+
+
+        }
+        if (endshoot){
+             ApplicationView.isTouchEnable=true;
         }
 
     }
-
-
-
-
 
     boolean check_col(RectF r1, RectF r2){
         float radius;
@@ -390,6 +446,7 @@ public class LineC {
         return a;
 
     }
+
     void identify(int index, int p) {
         ArrayList<Integer> b1 = new ArrayList<>();
         ArrayList<Integer> b2 = new ArrayList<>();
@@ -452,21 +509,6 @@ public class LineC {
         }
 
     }
-
-void getshootingball(){
-    ArrayList<Integer> ballarray=new ArrayList<>();
-    for (int j = balls.size(); j >= 0; j--) {
-        if (balls.get(j).y<0){
-            break;
-        }
-         if (balls.get(j).isVisible){
-             if (!ballarray.contains(balls.get(j).index)){
-                 ballarray.add(balls.get(j).index);
-             }
-         }
-
-    }
-}
 
 
 
